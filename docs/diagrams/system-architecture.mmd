@@ -1,22 +1,22 @@
 graph TB
-    subgraph "Client Layer"
+    subgraph Client["Client Layer"]
         Web[Web Browser]
         Mobile[Mobile App]
     end
     
-    subgraph "Application Layer - BEAM Cluster"
+    subgraph App["Application Layer - BEAM Cluster"]
         LV[LiveView UI]
         API[REST/GraphQL API]
         Workers[Pipeline Workers]
     end
     
-    subgraph "Data Layer"
+    subgraph Data["Data Layer"]
         PG[(PostgreSQL<br/>Relational Data)]
         TS[(TimescaleDB<br/>Time-Series Data)]
         Cache[ETS Cache<br/>Hot Data]
     end
     
-    subgraph "Storage Layer"
+    subgraph Storage["Storage Layer"]
         S3[Object Storage<br/>S3/R2]
     end
     
@@ -34,6 +34,10 @@ graph TB
     LV --> Cache
     API --> PG
     
-    style "Application Layer - BEAM Cluster" fill:#e1f5ff
-    style "Data Layer" fill:#fff4e1
-    style "Storage Layer" fill:#f0f0f0
+    classDef appLayer fill:#e1f5ff,stroke:#333,stroke-width:2px
+    classDef dataLayer fill:#fff4e1,stroke:#333,stroke-width:2px
+    classDef storageLayer fill:#f0f0f0,stroke:#333,stroke-width:2px
+    
+    class App appLayer
+    class Data dataLayer
+    class Storage storageLayer
