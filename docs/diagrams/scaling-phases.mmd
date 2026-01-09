@@ -1,0 +1,33 @@
+graph LR
+    subgraph "Phase 1: 100-1K Users"
+        P1_App[Single BEAM Node]
+        P1_DB[(Single TimescaleDB)]
+        P1_App --> P1_DB
+    end
+    
+    subgraph "Phase 2: 1K-10K Users"
+        P2_App[BEAM Cluster<br/>2-5 nodes]
+        P2_Primary[(Primary DB)]
+        P2_Replica1[(Read Replica 1)]
+        P2_Replica2[(Read Replica 2)]
+        
+        P2_App -->|Writes| P2_Primary
+        P2_App -->|Reads| P2_Replica1
+        P2_App -->|Reads| P2_Replica2
+        P2_Primary -.->|Replication| P2_Replica1
+        P2_Primary -.->|Replication| P2_Replica2
+    end
+    
+    subgraph "Phase 3: 10K-50K Users"
+        P3_App[BEAM Cluster<br/>10-50 nodes]
+        P3_Hot[(Hot Storage<br/>ClickHouse)]
+        P3_Cold[(Cold Storage<br/>S3/Parquet)]
+        P3_Kafka[Kafka Stream]
+        
+        P3_App --> P3_Kafka
+        P3_Kafka --> P3_Hot
+        P3_Kafka --> P3_Cold
+    end
+    
+    P1_DB -.Migrate.-> P2_Primary
+    P2_Replica1 -.Evolve.-> P3_Hot

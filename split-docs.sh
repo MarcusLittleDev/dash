@@ -209,13 +209,168 @@ echo "✅ Created .gitignore"
 
 # Extract Mermaid diagrams
 echo ""
-echo "📝 Extracting Mermaid diagrams..."
+echo "📝 Creating Mermaid diagram templates..."
 
-# System Architecture
-awk '/```mermaid/,/```/ { if (/```mermaid/) next; if (/```/) exit; print }' "$INPUT_FILE" | head -n 50 > docs/diagrams/system-architecture.mmd
-if [ -s docs/diagrams/system-architecture.mmd ]; then
-    echo "✅ Created docs/diagrams/system-architecture.mmd"
-fi
+# System Architecture diagram
+cat > docs/diagrams/system-architecture.mmd << 'EOF'
+graph TB
+    subgraph "Client Layer"
+        Web[Web Browser]
+        Mobile[Mobile App]
+    end
+    
+    subgraph "Application Layer - BEAM Cluster"
+        LV[LiveView UI]
+        API[REST/GraphQL API]
+        Workers[Pipeline Workers]
+    end
+    
+    subgraph "Data Layer"
+        PG[(PostgreSQL<br/>Relational Data)]
+        TS[(TimescaleDB<br/>Time-Series Data)]
+        Cache[ETS Cache<br/>Hot Data]
+    end
+    
+    subgraph "Storage Layer"
+        S3[Object Storage<br/>S3/R2]
+    end
+    
+    Web --> LV
+    Mobile -.-> API
+    
+    LV --> Workers
+    API --> Workers
+    
+    Workers --> PG
+    Workers --> TS
+    Workers --> Cache
+    Workers --> S3
+    
+    LV --> Cache
+    API --> PG
+    
+    style "Application Layer - BEAM Cluster" fill:#e1f5ff
+    style "Data Layer" fill:#fff4e1
+    style "Storage Layer" fill:#f0f0f0
+EOF
+
+echo "✅ Created docs/diagrams/system-architecture.mmd"
+
+# Data Flow diagram
+cat > docs/diagrams/data-flow.mmd << 'EOF'
+sequenceDiagram
+    participant Src as External API
+    participant Worker as Pipeline Worker
+    participant Mapper as Data Mapper
+    participant DB as TimescaleDB
+    participant Cache as ETS Cache
+    participant PubSub as Phoenix PubSub
+    participant LV as LiveView Dashboard
+    
+    Worker->>Src: Poll for data
+    Src-->>Worker: Return raw data
+    Worker->>Mapper: Transform data
+    Mapper-->>Worker: Transformed data
+    
+    par Persist Data
+        Worker->>DB: Batch insert
+    and Update Cache
+        Worker->>Cache: Update recent data
+    and Notify Dashboards
+        Worker->>PubSub: Broadcast new data
+    end
+    
+    PubSub-->>LV: Push update
+    LV->>Cache: Get recent data
+    Cache-->>LV: Return cached data
+    LV->>LV: Render chart
+EOF
+
+echo "✅ Created docs/diagrams/data-flow.mmd"
+
+# Scaling phases diagram
+cat > docs/diagrams/scaling-phases.mmd << 'EOF'
+graph LR
+    subgraph "Phase 1: 100-1K Users"
+        P1_App[Single BEAM Node]
+        P1_DB[(Single TimescaleDB)]
+        P1_App --> P1_DB
+    end
+    
+    subgraph "Phase 2: 1K-10K Users"
+        P2_App[BEAM Cluster<br/>2-5 nodes]
+        P2_Primary[(Primary DB)]
+        P2_Replica1[(Read Replica 1)]
+        P2_Replica2[(Read Replica 2)]
+        
+        P2_App -->|Writes| P2_Primary
+        P2_App -->|Reads| P2_Replica1
+        P2_App -->|Reads| P2_Replica2
+        P2_Primary -.->|Replication| P2_Replica1
+        P2_Primary -.->|Replication| P2_Replica2
+    end
+    
+    subgraph "Phase 3: 10K-50K Users"
+        P3_App[BEAM Cluster<br/>10-50 nodes]
+        P3_Hot[(Hot Storage<br/>ClickHouse)]
+        P3_Cold[(Cold Storage<br/>S3/Parquet)]
+        P3_Kafka[Kafka Stream]
+        
+        P3_App --> P3_Kafka
+        P3_Kafka --> P3_Hot
+        P3_Kafka --> P3_Cold
+    end
+    
+    P1_DB -.Migrate.-> P2_Primary
+    P2_Replica1 -.Evolve.-> P3_Hot
+EOF
+
+echo "✅ Created docs/diagrams/scaling-phases.mmd"
+
+# Pipeline execution diagram
+cat > docs/diagrams/pipeline-execution.mmd << 'EOF'
+flowchart TD
+    Start([Pipeline Scheduled]) --> CheckType{Pipeline Type?}
+    
+    CheckType -->|Polling| PollAPI[Poll External API]
+    CheckType -->|Realtime| WaitWebhook[Wait for Webhook]
+    
+    PollAPI --> FetchData[Fetch Raw Data]
+    WaitWebhook --> ReceiveData[Receive Data]
+    
+    FetchData --> HasMapping{Has Data Mapping?}
+    ReceiveData --> HasMapping
+    
+    HasMapping -->|Yes| Transform[Transform Data<br/>Apply Mappings]
+    HasMapping -->|No| UseRaw[Use Raw Data]
+    
+    Transform --> ShouldPersist{Persist Data?}
+    UseRaw --> ShouldPersist
+    
+    ShouldPersist -->|Yes| BatchInsert[Batch Insert to DB]
+    ShouldPersist -->|No| SkipDB[Skip Database]
+    
+    BatchInsert --> UpdateCache[Update ETS Cache]
+    SkipDB --> UpdateCache
+    
+    UpdateCache --> HasSinks{Has Sinks?}
+    
+    HasSinks -->|Yes| SendSinks[Send to Data Sinks]
+    HasSinks -->|No| Broadcast
+    
+    SendSinks --> Broadcast[Broadcast via PubSub]
+    
+    Broadcast --> UpdateDashboards[LiveView Dashboards Update]
+    
+    UpdateDashboards --> Schedule{Polling Pipeline?}
+    
+    Schedule -->|Yes| ScheduleNext[Schedule Next Run]
+    Schedule -->|No| End([Complete])
+    
+    ScheduleNext --> End
+EOF
+
+echo "✅ Created docs/diagrams/pipeline-execution.mmd"
 
 # Initialize git
 echo ""

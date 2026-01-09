@@ -1,0 +1,26 @@
+sequenceDiagram
+    participant Src as External API
+    participant Worker as Pipeline Worker
+    participant Mapper as Data Mapper
+    participant DB as TimescaleDB
+    participant Cache as ETS Cache
+    participant PubSub as Phoenix PubSub
+    participant LV as LiveView Dashboard
+    
+    Worker->>Src: Poll for data
+    Src-->>Worker: Return raw data
+    Worker->>Mapper: Transform data
+    Mapper-->>Worker: Transformed data
+    
+    par Persist Data
+        Worker->>DB: Batch insert
+    and Update Cache
+        Worker->>Cache: Update recent data
+    and Notify Dashboards
+        Worker->>PubSub: Broadcast new data
+    end
+    
+    PubSub-->>LV: Push update
+    LV->>Cache: Get recent data
+    Cache-->>LV: Return cached data
+    LV->>LV: Render chart

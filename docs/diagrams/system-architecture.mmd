@@ -1,0 +1,39 @@
+graph TB
+    subgraph "Client Layer"
+        Web[Web Browser]
+        Mobile[Mobile App]
+    end
+    
+    subgraph "Application Layer - BEAM Cluster"
+        LV[LiveView UI]
+        API[REST/GraphQL API]
+        Workers[Pipeline Workers]
+    end
+    
+    subgraph "Data Layer"
+        PG[(PostgreSQL<br/>Relational Data)]
+        TS[(TimescaleDB<br/>Time-Series Data)]
+        Cache[ETS Cache<br/>Hot Data]
+    end
+    
+    subgraph "Storage Layer"
+        S3[Object Storage<br/>S3/R2]
+    end
+    
+    Web --> LV
+    Mobile -.-> API
+    
+    LV --> Workers
+    API --> Workers
+    
+    Workers --> PG
+    Workers --> TS
+    Workers --> Cache
+    Workers --> S3
+    
+    LV --> Cache
+    API --> PG
+    
+    style "Application Layer - BEAM Cluster" fill:#e1f5ff
+    style "Data Layer" fill:#fff4e1
+    style "Storage Layer" fill:#f0f0f0

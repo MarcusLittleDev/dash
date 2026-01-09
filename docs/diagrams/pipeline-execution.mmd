@@ -1,0 +1,39 @@
+flowchart TD
+    Start([Pipeline Scheduled]) --> CheckType{Pipeline Type?}
+    
+    CheckType -->|Polling| PollAPI[Poll External API]
+    CheckType -->|Realtime| WaitWebhook[Wait for Webhook]
+    
+    PollAPI --> FetchData[Fetch Raw Data]
+    WaitWebhook --> ReceiveData[Receive Data]
+    
+    FetchData --> HasMapping{Has Data Mapping?}
+    ReceiveData --> HasMapping
+    
+    HasMapping -->|Yes| Transform[Transform Data<br/>Apply Mappings]
+    HasMapping -->|No| UseRaw[Use Raw Data]
+    
+    Transform --> ShouldPersist{Persist Data?}
+    UseRaw --> ShouldPersist
+    
+    ShouldPersist -->|Yes| BatchInsert[Batch Insert to DB]
+    ShouldPersist -->|No| SkipDB[Skip Database]
+    
+    BatchInsert --> UpdateCache[Update ETS Cache]
+    SkipDB --> UpdateCache
+    
+    UpdateCache --> HasSinks{Has Sinks?}
+    
+    HasSinks -->|Yes| SendSinks[Send to Data Sinks]
+    HasSinks -->|No| Broadcast
+    
+    SendSinks --> Broadcast[Broadcast via PubSub]
+    
+    Broadcast --> UpdateDashboards[LiveView Dashboards Update]
+    
+    UpdateDashboards --> Schedule{Polling Pipeline?}
+    
+    Schedule -->|Yes| ScheduleNext[Schedule Next Run]
+    Schedule -->|No| End([Complete])
+    
+    ScheduleNext --> End
