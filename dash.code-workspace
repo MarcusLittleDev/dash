@@ -1,0 +1,150 @@
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    // Elixir Configuration
+    "elixirLS.dialyzerEnabled": true,
+    "elixirLS.fetchDeps": false,
+    "elixirLS.suggestSpecs": true,
+    "elixirLS.signatureAfterComplete": false,
+
+    // Format on save
+    "[elixir]": {
+      "editor.formatOnSave": true,
+      "editor.tabSize": 2
+    },
+
+    "[phoenix-heex]": {
+      "editor.formatOnSave": true,
+      "editor.tabSize": 2
+    },
+
+    "[eex]": {
+      "editor.formatOnSave": true,
+      "editor.tabSize": 2
+    },
+
+    // File associations
+    "files.associations": {
+      "*.html.heex": "phoenix-heex",
+      "*.html.leex": "phoenix-heex",
+      "*.ex": "elixir",
+      "*.exs": "elixir",
+      "mix.lock": "elixir"
+    },
+
+    // Tailwind CSS
+    "tailwindCSS.includeLanguages": {
+      "elixir": "html",
+      "phoenix-heex": "html",
+      "eex": "html"
+    },
+    "tailwindCSS.experimental.classRegex": [
+      "class[:]\\s*\"([^\"]*)"
+    ],
+    "tailwindCSS.emmetCompletions": true,
+
+    // Editor settings
+    "editor.rulers": [98, 120],
+    "editor.wordWrap": "off",
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false,
+    "editor.trimAutoWhitespace": true,
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+
+    // Search exclusions
+    "search.exclude": {
+      "**/_build": true,
+      "**/deps": true,
+      "**/node_modules": true,
+      "**/.elixir_ls": true,
+      "**/cover": true,
+      "**/doc": true
+    },
+
+    // File watcher exclusions (for performance)
+    "files.watcherExclude": {
+      "**/_build": true,
+      "**/deps": true,
+      "**/node_modules": true,
+      "**/.elixir_ls": true,
+      "**/cover": true
+    },
+
+    // Git
+    "git.ignoreLimitWarning": true,
+
+    // Terminal
+    "terminal.integrated.scrollback": 10000,
+
+    // Disable telemetry for performance
+    "telemetry.telemetryLevel": "off",
+
+    // PostgreSQL connection
+    "vscode-postgres.connections": [
+      {
+        "name": "Dash Development",
+        "host": "localhost",
+        "port": 5432,
+        "user": "YOUR_USERNAME",
+        "password": "",
+        "database": "dash_dev",
+        "ssl": false
+      },
+      {
+        "name": "Dash Test",
+        "host": "localhost",
+        "port": 5432,
+        "user": "YOUR_USERNAME",
+        "password": "",
+        "database": "dash_test",
+        "ssl": false
+      }
+    ]
+  },
+  "extensions": {
+    "recommendations": [
+      "jakebecker.elixir-ls",
+      "phoenixframework.phoenix",
+      "bradlc.vscode-tailwindcss",
+      "ckolkman.vscode-postgres",
+      "eamodio.gitlens",
+      "usernamehw.errorlens",
+      "yzhang.markdown-all-in-one",
+      "gruntfuggly.todo-tree",
+      "aaron-bond.better-comments"
+    ]
+  },
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "type": "mix_task",
+        "name": "mix test",
+        "request": "launch",
+        "task": "test",
+        "taskArgs": [
+          "--trace"
+        ],
+        "startApps": true,
+        "projectDir": "${workspaceRoot}",
+        "requireFiles": [
+          "test/**/test_helper.exs",
+          "test/**/*_test.exs"
+        ]
+      },
+      {
+        "type": "mix_task",
+        "name": "mix phx.server",
+        "request": "launch",
+        "task": "phx.server",
+        "projectDir": "${workspaceRoot}"
+      }
+    ]
+  }
+}
