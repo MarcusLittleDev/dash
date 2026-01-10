@@ -1,28 +1,27 @@
-## Architecture Overview
-
-### High-Level System Architecture
+# Architecture Overview
+## High-Level System Architecture
 
 ```mermaid
 graph TB
-    subgraph "Client Layer"
+    subgraph ClientLayer["Client Layer"]
         Web[Web Browser<br/>LiveView]
         Mobile[Mobile App<br/>Future API Client]
     end
     
-    subgraph "Application Layer - BEAM Cluster"
+    subgraph ApplicationLayer["Application Layer - BEAM Cluster"]
         LV[LiveView UI<br/>Real-time Dashboards]
         API[REST/GraphQL API<br/>Ash Auto-generated]
         Workers[Pipeline Workers<br/>GenServers]
         Scheduler[Oban Scheduler<br/>Background Jobs]
     end
     
-    subgraph "Data Layer"
+    subgraph DataLayer["Data Layer"]
         PG[(PostgreSQL<br/>Relational Data<br/>Teams, Users, Config)]
         TS[(TimescaleDB<br/>Time-Series Data<br/>Pipeline Data)]
         Cache[ETS Cache<br/>Hot Data<br/>Last 100 records]
     end
     
-    subgraph "External Storage"
+    subgraph ExternalStorage["External Storage"]
         S3[Object Storage<br/>Cloudflare R2<br/>File Uploads]
         ExtAPI[External APIs<br/>Data Sources]
         Sinks[Data Sinks<br/>Destinations]
@@ -50,12 +49,12 @@ graph TB
     LV --> PG
     API --> PG
     
-    style "Application Layer - BEAM Cluster" fill:#e1f5ff
-    style "Data Layer" fill:#fff4e1
-    style "External Storage" fill:#f0f0f0
+    style ApplicationLayer fill:#e1f5ff
+    style DataLayer fill:#fff4e1
+    style ExternalStorage fill:#f0f0f0
 ```
 
-### Data Flow Architecture
+## Data Flow Architecture
 
 ```mermaid
 sequenceDiagram
@@ -99,7 +98,7 @@ sequenceDiagram
     LV->>LV: Render/update charts
 ```
 
-### Pipeline Execution Flow
+## Pipeline Execution Flow
 
 ```mermaid
 flowchart TD
@@ -155,11 +154,11 @@ flowchart TD
     style Broadcast fill:#e1ffe1
 ```
 
-### Scaling Phases
+## Scaling Phases
 
 ```mermaid
 graph LR
-    subgraph "Phase 1: 100-1K Users<br/>$500-2K/month"
+    subgraph Phase1["Phase 1: 100-1K Users"]
         P1_App[Single BEAM Node<br/>2-4 cores]
         P1_DB[(Single TimescaleDB<br/>4GB RAM)]
         P1_Cache[ETS Cache]
@@ -168,7 +167,7 @@ graph LR
         P1_App --> P1_Cache
     end
     
-    subgraph "Phase 2: 1K-10K Users<br/>$10-20K/month"
+    subgraph Phase2["Phase 2: 1K-10K Users"]
         P2_App[BEAM Cluster<br/>2-5 nodes]
         P2_Primary[(Primary DB<br/>16GB RAM)]
         P2_Replica1[(Read Replica 1)]
@@ -183,7 +182,7 @@ graph LR
         P2_App --> P2_Cache
     end
     
-    subgraph "Phase 3: 10K-50K Users<br/>$50-100K/month"
+    subgraph Phase3["Phase 3: 10K-50K Users"]
         P3_App[BEAM Cluster<br/>10-50 nodes<br/>Kubernetes]
         P3_Hot[(Hot Storage<br/>ClickHouse<br/>Last 30 days)]
         P3_Cold[(Cold Storage<br/>S3 Parquet<br/>Historical)]
@@ -200,10 +199,23 @@ graph LR
     P1_DB -.Migrate.-> P2_Primary
     P2_Replica1 -.Evolve.-> P3_Hot
     
-    style "Phase 1: 100-1K Users<br/>$500-2K/month" fill:#e8f5e9
-    style "Phase 2: 1K-10K Users<br/>$10-20K/month" fill:#fff3e0
-    style "Phase 3: 10K-50K Users<br/>$50-100K/month" fill:#fce4ec
+    style Phase1 fill:#e8f5e9
+    style Phase2 fill:#fff3e0
+    style Phase3 fill:#fce4ec
 ```
+
+## Notes on Cost by Phase
+
+- **Phase 1**: $500-2K/month infrastructure
+- **Phase 2**: $10-20K/month infrastructure  
+- **Phase 3**: $50-100K/month infrastructure
 
 ---
 
+## Key Changes Made
+
+1. **Removed spaces from subgraph IDs**: Changed `"Application Layer - BEAM Cluster"` to `ApplicationLayer` with display name in brackets
+2. **Fixed style references**: Now references the ID (`ApplicationLayer`) instead of the display name
+3. **Applied same fix to all three diagrams** that had style statements
+
+This syntax is compatible with GitHub, GitLab, and most Mermaid renderers.
