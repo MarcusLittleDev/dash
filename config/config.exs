@@ -63,3 +63,37 @@ config :phoenix, :json_library, Jason
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"
+
+# configures ecto to use binary id's for primary and foreign keys
+# uses utc time for timestamps instead of native_datetime (timestamp with no timezone info)
+config :dash, Dash.Repo,
+  migration_primary_key: [name: :id, type: :binary_id],
+  migration_foreign_key: [column: :id, type: :binary_id],
+  migration_timestamps: [type: :utc_datetime]
+
+# Configure Ash Framework
+config :dash,
+  ash_domains: [Dash.Domain]
+
+# Configure AshPostgres
+config :ash, :use_all_identities_in_manage_relationship?, false
+
+# Configure AshAuthentication
+config :ash_authentication,
+  token_lifetime: {1, :hour},
+  signing_secret: "change_this_in_production"
+
+# Configure Oban for background job processing
+config :dash, Oban,
+  repo: Dash.Repo,
+  plugins: [
+    # Automatically prune completed jobs
+    Oban.Plugins.Pruner
+  ],
+  queues: [
+    default: 10,
+    # For pipeline polling jobs
+    pipelines: 20,
+    # For sending emails
+    mailers: 5
+  ]

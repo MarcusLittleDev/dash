@@ -67,6 +67,16 @@ if config_env() == :prod do
     ],
     secret_key_base: secret_key_base
 
+  ash_auth_secret =
+    System.get_env("ASH_AUTHENTICATION_SECRET") ||
+      raise """
+      environment variable ASH_AUTHENTICATION_SECRET is missing.
+      You can generate one by calling: mix phx.gen.secret 64
+      """
+
+  config :ash_authentication,
+    signing_secret: ash_auth_secret
+
   # ## SSL Support
   #
   # To get SSL working, you will need to add the `https` key

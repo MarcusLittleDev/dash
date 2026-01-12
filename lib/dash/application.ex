@@ -10,6 +10,8 @@ defmodule Dash.Application do
     children = [
       DashWeb.Telemetry,
       Dash.Repo,
+      # Starts the Oban supervisor when your application boots.
+      {Oban, Application.fetch_env!(:dash, Oban)},
       {DNSCluster, query: Application.get_env(:dash, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Dash.PubSub},
       # Start a worker by calling: Dash.Worker.start_link(arg)

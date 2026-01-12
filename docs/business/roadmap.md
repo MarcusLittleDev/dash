@@ -5,34 +5,34 @@
 **Week 1-2: Foundation**
 - [x] Initialize Phoenix project
 - [x] Set up Ash Framework
-- [x] Configure PostgreSQL + TimescaleDB
-- [x] Implement authentication (username/password, magic link)
-- [x] Create Team/User schemas and contexts
-- [x] Build basic UI shell with LiveView
+- [ ] Configure PostgreSQL + TimescaleDB
+- [ ] Implement authentication (username/password, magic link)
+- [ ] Create Team/User schemas and contexts
+- [ ] Build basic UI shell with LiveView
 
 **Week 3-4: Core Pipeline**
-- [x] Pipeline CRUD operations
-- [x] HTTP polling source adapter
-- [x] Oban job scheduling
-- [x] TimescaleDB data insertion
-- [x] Basic data mapping (field remapping only)
-- [x] Pipeline worker GenServer
+- [ ] Pipeline CRUD operations
+- [ ] HTTP polling source adapter
+- [ ] Oban job scheduling
+- [ ] TimescaleDB data insertion
+- [ ] Basic data mapping (field remapping only)
+- [ ] Pipeline worker GenServer
 
 **Week 5-6: Dashboard MVP**
-- [x] Dashboard CRUD
-- [x] Widget system (table widget only initially)
-- [x] LiveView real-time updates
-- [x] Chart.js integration (line chart)
-- [x] Simple grid layout
-- [x] ETS cache implementation
+- [ ] Dashboard CRUD
+- [ ] Widget system (table widget only initially)
+- [ ] LiveView real-time updates
+- [ ] Chart.js integration (line chart)
+- [ ] Simple grid layout
+- [ ] ETS cache implementation
 
 **Week 7-8: Polish & Deploy**
-- [x] Add 2-3 more widget types (stat card, bar chart)
-- [x] Public dashboard sharing
-- [x] Error handling and user feedback
-- [x] Deploy to Fly.io
-- [x] Basic monitoring setup
-- [x] Documentation
+- [ ] Add 2-3 more widget types (stat card, bar chart)
+- [ ] Public dashboard sharing
+- [ ] Error handling and user feedback
+- [ ] Deploy to Fly.io
+- [ ] Basic monitoring setup
+- [ ] Documentation
 
 **MVP Deliverables:**
 - Working application with 1 team, multiple users

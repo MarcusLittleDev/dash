@@ -90,3 +90,8 @@ config :phoenix_live_view,
 
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false
+
+# Ash Framework development settings
+config :ash_authentication,
+  # In dev, use a fixed secret for easier debugging
+  signing_secret: "dev_secret_minimum_32_characters_long_for_security"

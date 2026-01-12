@@ -66,6 +66,21 @@ defmodule Dash.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.2.0"},
       {:bandit, "~> 1.5"},
+
+      # Ash Framework
+      {:ash, "~> 3.0"},
+      {:ash_phoenix, "~> 2.0"},
+      {:ash_authentication, "~> 4.0"},
+      {:ash_authentication_phoenix, "~> 2.0"},
+      {:ash_postgres, "~> 2.0"},
+
+      # Encryption for sensitive fields
+      {:cloak_ecto, "~> 1.3"},
+
+      # Job processing
+      {:oban, "~> 2.17"},
+
+      # Development tools
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false}
     ]
   end
