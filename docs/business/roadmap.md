@@ -5,7 +5,7 @@
 **Week 1-2: Foundation**
 - [x] Initialize Phoenix project
 - [x] Set up Ash Framework
-- [ ] Configure PostgreSQL + TimescaleDB
+- [x] Configure PostgreSQL + TimescaleDB
 - [ ] Implement authentication (username/password, magic link)
 - [ ] Create Team/User schemas and contexts
 - [ ] Build basic UI shell with LiveView

@@ -35,9 +35,9 @@ if config_env() == :prod do
   config :dash, Dash.Repo,
     # ssl: true,
     url: database_url,
-    pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
-    # For machines with several cores, consider starting multiple pools of `pool_size`
-    # pool_count: 4,
+    pool_size: String.to_integer(System.get_env("POOL_SIZE") || "20"),
+    queue_target: String.to_integer(System.get_env("QUEUE_TARGET") || "5000"),
+    queue_interval: String.to_integer(System.get_env("QUEUE_INTERVAL") || "1000"),
     socket_options: maybe_ipv6
 
   # The secret key base is used to sign/encrypt cookies and other secrets.
