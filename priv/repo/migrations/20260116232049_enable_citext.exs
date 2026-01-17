@@ -1,0 +1,13 @@
+defmodule Dash.Repo.Migrations.EnableCitext do
+  use Ecto.Migration
+
+  def up do
+    execute "CREATE EXTENSION IF NOT EXISTS citext"
+  end
+
+  def down do
+    execute "DROP EXTENSION IF EXISTS citext"
+  end
+end
+
+# enable citext extension for case-insensitive text fields
