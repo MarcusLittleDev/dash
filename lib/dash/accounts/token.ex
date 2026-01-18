@@ -7,7 +7,7 @@ defmodule Dash.Accounts.Token do
     extensions: [AshAuthentication.TokenResource]
 
   postgres do
-    table("tokens")
+    table("user_tokens")
     repo(Dash.Repo)
   end
 

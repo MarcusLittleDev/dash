@@ -6,6 +6,6 @@ defmodule Dash.Repo.Migrations.EnableTimescaledb do
   end
 
   def down do
-    execute "DROP EXTENSION IF NOT EXISTS timescaledb CASCADE"
+    execute "DROP EXTENSION IF EXISTS timescaledb CASCADE"
   end
 end

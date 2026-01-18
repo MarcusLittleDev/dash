@@ -13,7 +13,7 @@ config :spark,
 config :dash,
   ecto_repos: [Dash.Repo],
   generators: [timestamp_type: :utc_datetime],
-  ash_domains: [Dash.Accounts],
+  ash_domains: [Dash.Accounts, Dash.Domain],
   ash_authentication: [return_error_on_invalid_magic_link_token?: true]
 
 # Configure the endpoint
@@ -75,10 +75,6 @@ config :dash, Dash.Repo,
   migration_primary_key: [name: :id, type: :binary_id],
   migration_foreign_key: [column: :id, type: :binary_id],
   migration_timestamps: [type: :utc_datetime]
-
-# Configure Ash Framework
-config :dash,
-  ash_domains: [Dash.Domain]
 
 # Configure AshPostgres
 config :ash, :use_all_identities_in_manage_relationship?, false
