@@ -9,8 +9,6 @@ defmodule Dash.Domain do
   use Ash.Domain
 
   resources do
-    # Register all resources in the domain here
-    resource(Dash.Accounts.Token)
-    resource(Dash.Accounts.User)
+    # Resources will be added here as we create them
   end
 end

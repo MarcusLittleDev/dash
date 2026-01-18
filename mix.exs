@@ -81,10 +81,7 @@ defmodule Dash.MixProject do
       {:oban, "~> 2.17"},
 
       # Development tools
-      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
-
-      # SAT solver for Ash constraints
-      {:picosat_elixir, "~> 0.2"}
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false}
     ]
   end
 

@@ -1,12 +1,5 @@
 defmodule Dash.Repo do
-  use AshPostgres.Repo,
-    otp_app: :dash
-
-  def installed_extensions do
-    ["ash-functions", "uuid-ossp", "citext", "timescaledb"]
-  end
-
-  def min_pg_version do
-    %Version{major: 14, minor: 0, patch: 0}
-  end
+  use Ecto.Repo,
+    otp_app: :dash,
+    adapter: Ecto.Adapters.Postgres
 end
