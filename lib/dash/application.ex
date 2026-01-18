@@ -17,7 +17,8 @@ defmodule Dash.Application do
       # Start a worker by calling: Dash.Worker.start_link(arg)
       # {Dash.Worker, arg},
       # Start to serve requests, typically the last entry
-      DashWeb.Endpoint
+      DashWeb.Endpoint,
+      {AshAuthentication.Supervisor, [otp_app: :dash]}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

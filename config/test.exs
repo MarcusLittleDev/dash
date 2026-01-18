@@ -1,4 +1,5 @@
 import Config
+config :dash, token_signing_secret: "VQ1zWdXnW85FVJwYxeKduOlDN8g42iHr"
 
 # Configure your database
 #
@@ -46,7 +47,7 @@ config :ash_authentication,
   signing_secret: "test_secret_minimum_32_characters_long_for_security"
 
 # Faster password hashing in tests
-config :bcrypt_elixir, :log_rounds, 4
+config :bcrypt_elixir, :log_rounds, 1
 
 # Disable Oban during tests to avoid Sandbox conflicts
 config :dash, Oban, testing: :manual

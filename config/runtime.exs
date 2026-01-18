@@ -77,6 +77,11 @@ if config_env() == :prod do
   config :ash_authentication,
     signing_secret: ash_auth_secret
 
+  config :dash,
+    token_signing_secret:
+      System.get_env("TOKEN_SIGNING_SECRET") ||
+        raise("Missing environment variable `TOKEN_SIGNING_SECRET`!")
+
   # ## SSL Support
   #
   # To get SSL working, you will need to add the `https` key

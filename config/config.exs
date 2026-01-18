@@ -7,9 +7,14 @@
 # General application configuration
 import Config
 
+config :spark,
+  formatter: ["Ash.Resource": [section_order: [:authentication, :token, :user_identity]]]
+
 config :dash,
   ecto_repos: [Dash.Repo],
-  generators: [timestamp_type: :utc_datetime]
+  generators: [timestamp_type: :utc_datetime],
+  ash_domains: [Dash.Accounts],
+  ash_authentication: [return_error_on_invalid_magic_link_token?: true]
 
 # Configure the endpoint
 config :dash, DashWeb.Endpoint,
