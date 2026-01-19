@@ -6,7 +6,7 @@
 - [x] Initialize Phoenix project
 - [x] Set up Ash Framework
 - [x] Configure PostgreSQL + TimescaleDB
-- [ ] Implement authentication (username/password, magic link)
+- [x] Implement authentication (username/password, magic link)
 - [ ] Create Team/User schemas and contexts
 - [ ] Build basic UI shell with LiveView
 

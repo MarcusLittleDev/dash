@@ -1,23 +1,13 @@
 defmodule Dash.Resource do
-  @moduledoc """
-  Base resource configuration shared by all Dash resources.
-  """
-
-  defmacro __using__(_opts) do
+  defmacro __using__(opts) do
     quote do
-      use Ash.Resource,
-        domain: Dash.Domain,
-        data_layer: AshPostgres.DataLayer
+      # Inherit Ash.Resource behavior
+      use Ash.Resource, unquote(opts)
 
-      postgres do
-        repo(Dash.Repo)
-      end
-
-      # Default attributes all resources get
+      # Inject common attributes for all resources
       attributes do
-        uuid_primary_key(:id)
-
-        timestamps()
+        uuid_primary_key(:id) # Adds a UUID primary key :id
+        timestamps() # Adds :inserted_at and :updated_at
       end
     end
   end

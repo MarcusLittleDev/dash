@@ -1,5 +1,5 @@
 defmodule Dash.Accounts.User do
-  use Ash.Resource,
+  use Dash.Resource,
     otp_app: :dash,
     domain: Dash.Accounts,
     data_layer: AshPostgres.DataLayer,
@@ -68,7 +68,6 @@ defmodule Dash.Accounts.User do
   end
 
   attributes do
-    uuid_primary_key(:id)
 
     attribute :email, :ci_string do
       allow_nil?(false)
