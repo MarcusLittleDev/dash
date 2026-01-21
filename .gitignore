@@ -22,3 +22,6 @@ _build/
 # Environment
 .env
 .env.local
+
+# Generated license files
+*.license

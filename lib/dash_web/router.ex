@@ -35,6 +35,25 @@ defmodule DashWeb.Router do
       #
       # If an authenticated user must *not* be present:
       # on_mount {DashWeb.LiveUserAuth, :live_no_user}
+
+      # Organizations
+      live "/organizations", OrganizationLive.Index, :index
+      live "/organizations/:id", OrganizationLive.Show, :show
+
+      # Teams
+      live "/teams", TeamLive.Index, :index
+      live "/teams/:id", TeamLive.Show, :show
+
+      # Org Memberships
+      live "/org_memberships", OrgMembershipLive.Index, :index
+      live "/org_memberships/new", OrgMembershipLive.Form, :new
+      live "/org_memberships/:id/edit", OrgMembershipLive.Form, :edit
+      live "/org_memberships/:id", OrgMembershipLive.Show, :show
+      live "/org_memberships/:id/show/edit", OrgMembershipLive.Show, :edit
+
+      # Team Members
+      live "/team_members", TeamMemberLive.Index, :index
+      live "/team_members/:id", TeamMemberLive.Show, :show
     end
   end
 
