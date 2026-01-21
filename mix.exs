@@ -70,11 +70,12 @@ defmodule Dash.MixProject do
       {:bandit, "~> 1.5"},
 
       # Ash Framework
-      {:ash, "~> 3.0"},
-      {:ash_phoenix, "~> 2.0"},
-      {:ash_authentication, "~> 4.0"},
-      {:ash_authentication_phoenix, "~> 2.0"},
-      {:ash_postgres, "~> 2.0"},
+      {:ash, "~> 3.13"},
+      {:ash_phoenix, "~> 2.3"},
+      {:ash_authentication, "~> 4.13"},
+      {:ash_authentication_phoenix, "~> 2.15"},
+      {:ash_postgres, "~> 2.6"},
+      {:ash_slug, "~> 0.2.1"},
 
       # Encryption for sensitive fields
       {:cloak_ecto, "~> 1.3"},
@@ -83,7 +84,8 @@ defmodule Dash.MixProject do
       {:oban, "~> 2.17"},
 
       # Development tools
-      {:credo, "~> 1.7", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:sourceror, "~> 1.7", only: [:dev, :test]}
     ]
   end
 

@@ -68,7 +68,6 @@ defmodule Dash.Accounts.User do
   end
 
   attributes do
-
     attribute :email, :ci_string do
       allow_nil?(false)
       public?(true)
@@ -79,6 +78,11 @@ defmodule Dash.Accounts.User do
     end
 
     attribute(:confirmed_at, :utc_datetime_usec)
+  end
+
+  relationships do
+    has_many :org_memberships, Dash.Accounts.OrgMembership
+    has_many :team_members, Dash.Accounts.TeamMember
   end
 
   actions do

@@ -6,8 +6,10 @@ defmodule Dash.Resource do
 
       # Inject common attributes for all resources
       attributes do
-        uuid_primary_key(:id) # Adds a UUID primary key :id
-        timestamps() # Adds :inserted_at and :updated_at
+        # Adds a UUID primary key :id
+        uuid_primary_key(:id)
+        # Adds :inserted_at and :updated_at
+        timestamps()
       end
     end
   end

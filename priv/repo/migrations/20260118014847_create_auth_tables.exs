@@ -13,6 +13,14 @@ defmodule Dash.Repo.Migrations.CreateAuthTables do
       add :email, :citext, null: false
       add :hashed_password, :text
       add :confirmed_at, :utc_datetime_usec
+
+      add :inserted_at, :utc_datetime_usec,
+        null: false,
+        default: fragment("(now() AT TIME ZONE 'utc')")
+
+      add :updated_at, :utc_datetime_usec,
+        null: false,
+        default: fragment("(now() AT TIME ZONE 'utc')")
     end
 
     create unique_index(:users, [:email], name: "users_unique_email_index")
