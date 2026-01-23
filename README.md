@@ -169,7 +169,10 @@ dash/
 
 ### Phase 1: MVP (Weeks 1-8) - In Progress
 - [x] Project initialization
-- [ ] Authentication & team management
+- [x] Authentication (email/password + magic link)
+- [x] Organization & team management with RBAC
+- [x] LiveViews for org/team management
+- [ ] Application shell with navigation (in progress)
 - [ ] Basic pipeline creation
 - [ ] Simple dashboards
 - [ ] Real-time updates

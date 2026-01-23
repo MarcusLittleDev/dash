@@ -28,7 +28,7 @@
 | Component | Technology | Rationale |
 |-----------|-----------|-----------|
 | **Database** | PostgreSQL 16 + TimescaleDB | SQL, time-series, mature |
-| **File Storage** | Cloudflare R2 | S3-compatible, no egress fees |
+| **File Storage** | Cloudflare R2 | S3-compatible, no egress fees, Bronze layer (data lake) |
 | **Hosting** | Fly.io | Elixir-optimized, global edge |
 | **Container** | Docker | Standard, portable |
 | **Secrets** | Fly.io Secrets | Integrated, simple |

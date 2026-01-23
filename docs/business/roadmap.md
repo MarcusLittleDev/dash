@@ -7,8 +7,9 @@
 - [x] Set up Ash Framework
 - [x] Configure PostgreSQL + TimescaleDB
 - [x] Implement authentication (username/password, magic link)
-- [x] Create Team/User schemas and contexts
-- [ ] Build basic UI shell with LiveView
+- [x] Create Organization/Team/User schemas with role-based access
+- [x] Generate LiveViews for Organization and Team management
+- [ ] Build application shell with navigation (in progress)
 
 **Week 3-4: Core Pipeline**
 - [ ] Pipeline CRUD operations
