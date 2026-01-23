@@ -8,16 +8,6 @@ defmodule Dash.Repo.Migrations.AddOrgAndTeamTables do
   use Ecto.Migration
 
   def up do
-    alter table(:users) do
-      add :inserted_at, :utc_datetime_usec,
-        null: false,
-        default: fragment("(now() AT TIME ZONE 'utc')")
-
-      add :updated_at, :utc_datetime_usec,
-        null: false,
-        default: fragment("(now() AT TIME ZONE 'utc')")
-    end
-
     create table(:teams, primary_key: false) do
       add :id, :uuid, null: false, default: fragment("gen_random_uuid()"), primary_key: true
 
@@ -54,7 +44,8 @@ defmodule Dash.Repo.Migrations.AddOrgAndTeamTables do
             name: "team_members_team_id_fkey",
             type: :uuid,
             prefix: "public"
-          ), null: false
+          ),
+          null: false
 
       add :user_id,
           references(:users,
@@ -62,7 +53,8 @@ defmodule Dash.Repo.Migrations.AddOrgAndTeamTables do
             name: "team_members_user_id_fkey",
             type: :uuid,
             prefix: "public"
-          ), null: false
+          ),
+          null: false
     end
 
     create index(:team_members, [:team_id],
@@ -131,7 +123,8 @@ defmodule Dash.Repo.Migrations.AddOrgAndTeamTables do
             name: "org_memberships_organization_id_fkey",
             type: :uuid,
             prefix: "public"
-          ), null: false
+          ),
+          null: false
 
       add :user_id,
           references(:users,
@@ -139,7 +132,8 @@ defmodule Dash.Repo.Migrations.AddOrgAndTeamTables do
             name: "org_memberships_user_id_fkey",
             type: :uuid,
             prefix: "public"
-          ), null: false
+          ),
+          null: false
     end
 
     create index(:org_memberships, [:organization_id],
@@ -206,10 +200,5 @@ defmodule Dash.Repo.Migrations.AddOrgAndTeamTables do
     drop table(:team_members)
 
     drop table(:teams)
-
-    alter table(:users) do
-      remove :updated_at
-      remove :inserted_at
-    end
   end
 end
