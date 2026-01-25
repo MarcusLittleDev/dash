@@ -77,13 +77,15 @@ These documents represent the vision for a mature, high-scale production system.
    - Dead Letter Queue (DLQ) handling
    - **Implement in**: Phase 3 (Month 9+)
 
-5. **[05-self-hosted-deployment.md](05-self-hosted-deployment.md)**
-   - Binary compilation with Burrito
-   - License key enforcement
-   - Enterprise deployment strategy
-   - **Implement in**: Phase 4 (Month 10+)
+5. **[05-advanced-features.md](05-advanced-features.md)**
+   - Configurable dashboards (Gridstack.js)
+   - Widget customization (JSONLogic → Wasmex)
+   - Real-time collaboration (Presence → Y.js)
+   - AI-powered insights (Bumblebee)
+   - Reliability infrastructure (Horde, Vector, OpenTelemetry)
+   - **Implement in**: Phase 3-4 (Month 7+)
 
-6. **[CONTRIBUTING-advanced.md](CONTRIBUTING-advanced.md)**
+7. **[CONTRIBUTING-advanced.md](CONTRIBUTING-advanced.md)**
    - Advanced coding standards
    - Type system usage (Elixir 1.20+)
    - Performance guidelines
