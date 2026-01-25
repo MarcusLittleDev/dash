@@ -98,6 +98,85 @@
 - Digital Ocean: Manual setup, less Elixir-optimized
 - Heroku: More expensive, less control
 
+### DR-007: Layer Abstraction with Behaviours
+
+**Decision:** Abstract infrastructure layers using Elixir Behaviours and Adapter pattern, implemented incrementally as needed.
+
+**Rationale:**
+- **Testability**: Swap production implementations for in-memory/mock adapters in tests
+- **Portability**: Easily migrate from S3 to R2, PostgreSQL to ClickHouse, ETS to Redis
+- **Local Development**: Use local filesystem instead of cloud storage
+- **Self-Hosted**: Enable customers to use their own infrastructure
+- **Future-Proofing**: Technology choices can evolve without rewriting business logic
+
+**Pattern:**
+
+```elixir
+# lib/dash/storage/lake.ex
+defmodule Dash.Storage.Lake do
+  @moduledoc "Behaviour defining the Bronze layer storage interface"
+
+  @callback put_batch(binary(), String.t()) :: :ok | {:error, any()}
+  @callback stream_batch(String.t()) :: Enumerable.t()
+  @callback list_files(String.t()) :: [String.t()]
+  @callback delete_file(String.t()) :: :ok | {:error, any()}
+
+  def put_batch(data, path), do: adapter().put_batch(data, path)
+  def stream_batch(path), do: adapter().stream_batch(path)
+  def list_files(prefix), do: adapter().list_files(prefix)
+  def delete_file(path), do: adapter().delete_file(path)
+
+  defp adapter, do: Application.get_env(:dash, :lake_adapter)
+end
+```
+
+**Adapters by Layer:**
+
+| Layer | Behaviour | Production Adapter | Test/Dev Adapter | Future |
+|-------|-----------|-------------------|------------------|--------|
+| **Bronze (Data Lake)** | `Dash.Storage.Lake` | `Lake.R2Adapter` | `Lake.LocalAdapter` | S3, GCS |
+| **Silver (Metrics)** | `Dash.Storage.Metrics` | `Metrics.TimescaleAdapter` | `Metrics.EtsAdapter` | ClickHouse |
+| **Processing** | `Dash.Processing.Engine` | `Engine.ObanAdapter` | `Engine.InlineAdapter` | Broadway |
+| **Cache** | `Dash.Cache` | `Cache.EtsAdapter` | `Cache.AgentAdapter` | Redis, Horde |
+
+**Configuration:**
+
+```elixir
+# config/config.exs (production defaults)
+config :dash, :lake_adapter, Dash.Storage.Lake.R2Adapter
+config :dash, :metrics_adapter, Dash.Storage.Metrics.TimescaleAdapter
+config :dash, :cache_adapter, Dash.Cache.EtsAdapter
+
+# config/test.exs
+config :dash, :lake_adapter, Dash.Storage.Lake.LocalAdapter
+config :dash, :metrics_adapter, Dash.Storage.Metrics.EtsAdapter
+config :dash, :cache_adapter, Dash.Cache.AgentAdapter
+```
+
+**Alternatives Considered:**
+- **Direct module calls**: Simpler but tightly couples code to specific implementations
+- **Protocol-based dispatch**: More Elixir-idiomatic for data types, but Behaviours fit better for service contracts
+- **Dependency injection via GenServer**: Overkill for this use case
+
+**Implementation Strategy (Incremental):**
+
+The key insight is to avoid premature abstraction. Extract Behaviours when there's a concrete need:
+
+| Trigger | Action |
+|---------|--------|
+| First integration test needs mock storage | Extract `Dash.Storage.Lake` behaviour |
+| Self-hosted feature prioritized | Add `LocalAdapter` implementations |
+| Performance requires Redis/ClickHouse | Extract remaining Behaviours |
+| Test suite is slow due to DB calls | Add `EtsAdapter` for Silver layer |
+
+**Phase 1 (MVP)**: Direct calls to R2/TimescaleDB are acceptable. Focus on features.
+
+**Phase 2 (Testing)**: Extract `Dash.Storage.Lake` behaviour first (highest value for dev/test). Consider using [Mox](https://hexdocs.pm/mox) library for test mocks instead of full adapter implementations.
+
+**Phase 3 (Self-Hosted)**: Add local/bring-your-own adapters for all layers when self-hosted deployment is prioritized.
+
+**Keep APIs Minimal**: Only add methods to Behaviours when actually needed. Resist the urge to "complete" the interface upfront.
+
 ---
 
 ## Real-World Use Cases

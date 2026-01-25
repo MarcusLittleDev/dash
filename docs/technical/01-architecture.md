@@ -267,6 +267,22 @@ graph TB
 | **Cache** | Local ETS | Distributed cache (Horde) |
 | **Communication** | Local PubSub | Distributed PubSub |
 
+### Layer Abstraction Strategy
+
+Infrastructure layers are abstracted using **Elixir Behaviours** to enable:
+- Swappable implementations (R2 → S3, TimescaleDB → ClickHouse)
+- Test adapters (in-memory mocks instead of real storage)
+- Self-hosted deployments (local filesystem, bring-your-own database)
+
+| Layer | Behaviour | Default Adapter |
+|-------|-----------|-----------------|
+| **Bronze (Data Lake)** | `Dash.Storage.Lake` | R2Adapter |
+| **Silver (Metrics)** | `Dash.Storage.Metrics` | TimescaleAdapter |
+| **Processing** | `Dash.Processing.Engine` | ObanAdapter |
+| **Cache** | `Dash.Cache` | EtsAdapter |
+
+**Implementation approach**: Extract Behaviours incrementally when there's a concrete need (testing, self-hosted, technology migration). See [DR-007](../reference/decisions.md#dr-007-layer-abstraction-with-behaviours) for full rationale.
+
 ---
 
 ## High-Level System Architecture

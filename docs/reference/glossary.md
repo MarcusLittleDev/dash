@@ -2,13 +2,23 @@
 
 **Backpressure:** System mechanism to prevent OOM crashes by rejecting requests when GenServer mailbox exceeds thresholds
 
+**Adapter Pattern:** Implementation strategy where a module implements a Behaviour contract; enables swappable infrastructure (e.g., R2Adapter, LocalAdapter)
+
+**Apache Arrow:** Columnar memory format for zero-copy data access; used by Explorer for high-performance data processing
+
 **BEAM:** The Erlang virtual machine that runs Elixir code
 
-**Bronze Layer:** Raw data lake storing original JSONL files in object storage before transformation
+**Behaviour:** Elixir's mechanism for defining contracts (like interfaces); used to abstract infrastructure layers for testability and portability
+
+**Broadway:** Elixir library for building data pipelines with built-in batching, backpressure, and partitioning (future Phase 3+)
+
+**Bronze Layer:** Raw data lake storing Parquet files in object storage before transformation
 
 **Data Lake:** Object storage (S3/R2) containing raw pipeline data for replay and audit
 
 **ETS:** Erlang Term Storage - in-memory key-value store
+
+**Explorer:** Elixir library for DataFrame operations backed by Apache Arrow; used for high-performance data processing in replays
 
 **GenServer:** Generic server behavior in Elixir for stateful processes
 
@@ -25,6 +35,8 @@
 **Multi-tenancy:** Architecture where multiple customers (teams) share infrastructure but data is isolated
 
 **Oban:** Background job processing library for Elixir
+
+**Parquet:** Columnar file format optimized for analytics; used for Bronze layer storage (smaller, faster than JSONL)
 
 **Pipeline:** User-configured data flow from source to destination
 

@@ -11,9 +11,10 @@ Dash employs a "Medallion" architecture to balance high-speed visualization with
 **Bronze Layer (Raw Data Lake)**
 - **Purpose**: Permanent "Source of Truth" for all ingested data
 - **Storage**: Object Storage (Cloudflare R2 / Amazon S3 / Google Cloud Storage)
-- **Format**: Raw JSONL (Newline-delimited JSON)
+- **Format**: Apache Parquet (columnar, compressed) — enables zero-copy reads via Explorer/Arrow
 - **Workflow**: Every incoming webhook or poll is persisted here *before* transformation
 - **Benefits**: Enables non-destructive schema changes and pipeline replays
+- **Processing**: Explorer library reads Parquet files directly into memory-mapped DataFrames
 
 **Silver Layer (Metric Store)**
 - **Purpose**: High-speed analytical storage optimized for queries
@@ -26,8 +27,8 @@ Dash employs a "Medallion" architecture to balance high-speed visualization with
 
 ```mermaid
 flowchart LR
-    Source[External API<br/>Webhook] --> Bronze[Bronze Layer<br/>Raw JSONL<br/>Object Storage]
-    Bronze --> Transform[Data Mapper<br/>Transformations]
+    Source[External API<br/>Webhook] --> Bronze[Bronze Layer<br/>Parquet Files<br/>Object Storage]
+    Bronze --> Transform[Explorer/Arrow<br/>DataFrame Ops]
     Transform --> Silver[Silver Layer<br/>TimescaleDB<br/>Structured Data]
     Silver --> Dashboard[LiveView<br/>Dashboards]
     Bronze -.Replay.-> Transform
@@ -42,12 +43,64 @@ When users update pipeline mappings or transformations, Dash performs a **Pipeli
 
 1. **Trigger**: User saves new pipeline configuration
 2. **Job**: Oban worker (`Dash.Workers.PipelineReplay`) is dispatched
-3. **Stream**: Worker streams raw JSONL files from Bronze layer (Object Storage)
-4. **Reprocess**: Events pass through Ash Reactor with *new* mapping logic
-5. **Upsert**: Resulting metrics are written to Silver layer (TimescaleDB)
+3. **Load**: Worker loads Parquet files from Bronze layer using Explorer (zero-copy via Arrow)
+4. **Transform**: DataFrame operations apply *new* mapping logic (Rust NIFs, not BEAM)
+5. **Upsert**: Resulting metrics are bulk-inserted to Silver layer (TimescaleDB)
 6. **Notify**: Dashboard LiveViews receive PubSub notification to refresh
 
 This enables schema evolution without data loss.
+
+**Replay Performance with Explorer/Arrow:**
+
+```elixir
+# Replay worker using Explorer for 10-50x faster processing
+defmodule Dash.Workers.PipelineReplay do
+  use Oban.Worker, queue: :replays, max_attempts: 3
+  require Explorer.DataFrame, as: DF
+
+  def perform(%{args: %{"pipeline_id" => pipeline_id}}) do
+    pipeline = Ash.get!(Dash.Pipelines.Pipeline, pipeline_id)
+
+    # List all Bronze layer files for this pipeline
+    bronze_files = Dash.Storage.list_parquet_files(pipeline_id)
+
+    Enum.each(bronze_files, fn file_path ->
+      # Zero-copy load from R2/S3
+      df = DF.from_parquet!(file_path)
+
+      # Apply transformations using Arrow (Rust speed)
+      transformed = df
+      |> DF.filter(col("pipeline_id") == ^pipeline_id)
+      |> apply_mapping(pipeline.data_mapping)
+      |> DF.select(["timestamp", "metric_name", "metric_value"])
+
+      # Bulk insert to TimescaleDB
+      Dash.Data.PipelineData.insert_batch(
+        pipeline_id,
+        DF.to_rows(transformed)
+      )
+    end)
+
+    # Notify dashboards
+    Phoenix.PubSub.broadcast(Dash.PubSub, "pipeline:#{pipeline_id}", :replay_complete)
+
+    :ok
+  end
+
+  defp apply_mapping(df, mapping) do
+    # Apply user-defined field mappings as DataFrame operations
+    Enum.reduce(mapping.fields, df, fn {source, target}, acc ->
+      DF.mutate(acc, [{target, col(source)}])
+    end)
+  end
+end
+```
+
+**Why Explorer/Arrow for Replays:**
+- **Zero-copy**: Files are memory-mapped, not loaded into BEAM heap
+- **Columnar**: Only reads columns needed for transformation
+- **Compressed**: Parquet files are 2-10x smaller than JSONL
+- **Fast**: Rust NIFs process millions of rows in milliseconds
 
 ### Backpressure & Reliability
 
