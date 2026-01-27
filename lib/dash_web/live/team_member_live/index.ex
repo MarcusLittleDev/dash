@@ -1,44 +1,43 @@
 defmodule DashWeb.TeamMemberLive.Index do
   use DashWeb, :live_view
+  use DashWeb.OrgContextLive
 
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash}>
-      <.header>
-        Listing Team members
-        <:actions>
-          <.button variant="primary" navigate={~p"/team_members/new"}>
-            <.icon name="hero-plus" /> New Team member
-          </.button>
-        </:actions>
-      </.header>
+    <.header>
+      Listing Team members
+      <:actions>
+        <.button variant="primary" navigate={~p"/team_members/new"}>
+          <.icon name="hero-plus" /> New Team member
+        </.button>
+      </:actions>
+    </.header>
 
-      <.table
-        id="team_members"
-        rows={@streams.team_members}
-        row_click={fn {_id, team_member} -> JS.navigate(~p"/team_members/#{team_member}") end}
-      >
-        <:col :let={{_id, team_member}} label="Id">{team_member.id}</:col>
+    <.table
+      id="team_members"
+      rows={@streams.team_members}
+      row_click={fn {_id, team_member} -> JS.navigate(~p"/team_members/#{team_member}") end}
+    >
+      <:col :let={{_id, team_member}} label="Id">{team_member.id}</:col>
 
-        <:col :let={{_id, team_member}} label="Role">{team_member.role}</:col>
+      <:col :let={{_id, team_member}} label="Role">{team_member.role}</:col>
 
-        <:action :let={{_id, team_member}}>
-          <div class="sr-only">
-            <.link navigate={~p"/team_members/#{team_member}"}>Show</.link>
-          </div>
-        </:action>
+      <:action :let={{_id, team_member}}>
+        <div class="sr-only">
+          <.link navigate={~p"/team_members/#{team_member}"}>Show</.link>
+        </div>
+      </:action>
 
-        <:action :let={{id, team_member}}>
-          <.link
-            phx-click={JS.push("delete", value: %{id: team_member.id}) |> hide("##{id}")}
-            data-confirm="Are you sure?"
-          >
-            Delete
-          </.link>
-        </:action>
-      </.table>
-    </Layouts.app>
+      <:action :let={{id, team_member}}>
+        <.link
+          phx-click={JS.push("delete", value: %{id: team_member.id}) |> hide("##{id}")}
+          data-confirm="Are you sure?"
+        >
+          Delete
+        </.link>
+      </:action>
+    </.table>
     """
   end
 

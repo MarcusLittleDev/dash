@@ -1,34 +1,33 @@
 defmodule DashWeb.OrgMembershipLive.Form do
   use DashWeb, :live_view
+  use DashWeb.OrgContextLive
 
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash}>
-      <.header>
-        {@page_title}
-        <:subtitle>Use this form to manage org_membership records in your database.</:subtitle>
-      </.header>
+    <.header>
+      {@page_title}
+      <:subtitle>Use this form to manage org_membership records in your database.</:subtitle>
+    </.header>
 
-      <.form
-        for={@form}
-        id="org_membership-form"
-        phx-change="validate"
-        phx-submit="save"
-      >
-        <.input
-          field={@form[:role]}
-          type="select"
-          label="Role"
-          options={
-            Ash.Resource.Info.attribute(Dash.Accounts.OrgMembership, :role).constraints[:one_of]
-          }
-        />
+    <.form
+      for={@form}
+      id="org_membership-form"
+      phx-change="validate"
+      phx-submit="save"
+    >
+      <.input
+        field={@form[:role]}
+        type="select"
+        label="Role"
+        options={
+          Ash.Resource.Info.attribute(Dash.Accounts.OrgMembership, :role).constraints[:one_of]
+        }
+      />
 
-        <.button phx-disable-with="Saving..." variant="primary">Save Org membership</.button>
-        <.button navigate={return_path(@return_to, @org_membership)}>Cancel</.button>
-      </.form>
-    </Layouts.app>
+      <.button phx-disable-with="Saving..." variant="primary">Save Org membership</.button>
+      <.button navigate={return_path(@return_to, @org_membership)}>Cancel</.button>
+    </.form>
     """
   end
 

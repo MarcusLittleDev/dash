@@ -1,21 +1,20 @@
 defmodule DashWeb.TeamMemberLive.Show do
   use DashWeb, :live_view
+  use DashWeb.OrgContextLive
 
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash}>
-      <.header>
-        Team member {@team_member.id}
-        <:subtitle>This is a team_member record from your database.</:subtitle>
-      </.header>
+    <.header>
+      Team member {@team_member.id}
+      <:subtitle>This is a team_member record from your database.</:subtitle>
+    </.header>
 
-      <.list>
-        <:item title="Id">{@team_member.id}</:item>
+    <.list>
+      <:item title="Id">{@team_member.id}</:item>
 
-        <:item title="Role">{@team_member.role}</:item>
-      </.list>
-    </Layouts.app>
+      <:item title="Role">{@team_member.role}</:item>
+    </.list>
     """
   end
 
