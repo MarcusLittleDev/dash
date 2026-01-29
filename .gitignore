@@ -25,3 +25,6 @@ _build/
 
 # Generated license files
 *.license
+
+# Ash resource snapshots (auto-generated for migrations)
+priv/resource_snapshots/

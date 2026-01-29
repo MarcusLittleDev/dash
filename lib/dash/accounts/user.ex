@@ -78,6 +78,13 @@ defmodule Dash.Accounts.User do
     end
 
     attribute(:confirmed_at, :utc_datetime_usec)
+
+    attribute :role, :atom do
+      constraints(one_of: [:user, :employee, :superadmin])
+      default(:user)
+      allow_nil?(false)
+      description("System-level role: user (customer), employee (internal staff), superadmin (full access)")
+    end
   end
 
   relationships do

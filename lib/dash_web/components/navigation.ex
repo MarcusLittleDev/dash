@@ -101,9 +101,21 @@ defmodule DashWeb.Navigation do
       </div>
       <ul class="menu menu-sm">
         <li>
-          <.link navigate={~p"/organizations"}>
-            <.icon name="hero-building-office-2" class="h-4 w-4" />
-            Organizations
+          <.link navigate={~p"/home"}>
+            <.icon name="hero-home" class="h-4 w-4" />
+            Home
+          </.link>
+        </li>
+        <li>
+          <.link navigate={~p"/pipelines"}>
+            <.icon name="hero-arrow-path" class="h-4 w-4" />
+            Pipelines
+          </.link>
+        </li>
+        <li>
+          <.link navigate={~p"/dashboards"}>
+            <.icon name="hero-chart-bar" class="h-4 w-4" />
+            Dashboards
           </.link>
         </li>
         <li>
@@ -119,6 +131,87 @@ defmodule DashWeb.Navigation do
 
   attr :current_user, :map, required: true
 
+  def admin_sidebar(assigns) do
+    ~H"""
+    <aside class="drawer-side">
+      <label for="main-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+      <div class="menu bg-base-200 text-base-content min-h-full w-64 p-4 flex flex-col">
+        <!-- Logo -->
+        <div class="flex items-center gap-2 px-2 mb-4">
+          <img src={~p"/images/logo.svg"} class="h-8 w-8" alt="Dash" />
+          <span class="text-xl font-bold">Dash Admin</span>
+        </div>
+
+        <.admin_nav_menu />
+
+        <div class="flex-1"></div>
+
+        <.admin_user_menu current_user={@current_user} />
+      </div>
+    </aside>
+    """
+  end
+
+  def admin_nav_menu(assigns) do
+    ~H"""
+    <div class="mb-4">
+      <div class="px-2 py-1 text-xs font-semibold text-base-content/60 uppercase tracking-wider">
+        Admin
+      </div>
+      <ul class="menu menu-sm">
+        <li>
+          <.link navigate={~p"/admin"}>
+            <.icon name="hero-chart-bar" class="h-4 w-4" />
+            Dashboard
+          </.link>
+        </li>
+        <li>
+          <.link navigate={~p"/admin/organizations"}>
+            <.icon name="hero-building-office-2" class="h-4 w-4" />
+            Organizations
+          </.link>
+        </li>
+      </ul>
+    </div>
+    """
+  end
+
+  attr :current_user, :map, required: true
+
+  def admin_user_menu(assigns) do
+    ~H"""
+    <div class="border-t border-base-300 pt-4">
+      <div class="dropdown dropdown-top w-full">
+        <div tabindex="0" role="button" class="btn btn-ghost justify-start w-full">
+          <div class="avatar placeholder">
+            <div class="bg-neutral text-neutral-content rounded-full w-8">
+              <span class="text-xs"><%= String.first(to_string(@current_user.email)) |> String.upcase() %></span>
+            </div>
+          </div>
+          <span class="truncate flex-1 text-left"><%= to_string(@current_user.email) %></span>
+          <.icon name="hero-chevron-up" class="h-4 w-4" />
+        </div>
+        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-full mb-2">
+          <li>
+            <.link navigate={~p"/home"}>
+              <.icon name="hero-home" class="h-4 w-4" />
+              Back to App
+            </.link>
+          </li>
+          <li class="border-t border-base-200 mt-1 pt-1">
+            <.link href={~p"/sign-out"} method="delete" class="text-error">
+              <.icon name="hero-arrow-right-on-rectangle" class="h-4 w-4" />
+              Sign Out
+            </.link>
+          </li>
+        </ul>
+      </div>
+    </div>
+    """
+  end
+
+  attr :current_user, :map, required: true
+
   def user_menu(assigns) do
     ~H"""
     <div class="border-t border-base-300 pt-4">
@@ -126,10 +219,10 @@ defmodule DashWeb.Navigation do
         <div tabindex="0" role="button" class="btn btn-ghost justify-start w-full">
           <div class="avatar placeholder">
             <div class="bg-neutral text-neutral-content rounded-full w-8">
-              <span class="text-xs"><%= String.first(@current_user.email) |> String.upcase() %></span>
+              <span class="text-xs"><%= String.first(to_string(@current_user.email)) |> String.upcase() %></span>
             </div>
           </div>
-          <span class="truncate flex-1 text-left"><%= @current_user.email %></span>
+          <span class="truncate flex-1 text-left"><%= to_string(@current_user.email) %></span>
           <.icon name="hero-chevron-up" class="h-4 w-4" />
         </div>
         <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-full mb-2">

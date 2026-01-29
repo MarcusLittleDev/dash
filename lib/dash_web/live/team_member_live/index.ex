@@ -46,7 +46,10 @@ defmodule DashWeb.TeamMemberLive.Index do
     {:ok,
      socket
      |> assign(:page_title, "Listing Team members")
-     |> stream(:team_members, Ash.read!(Dash.Accounts.TeamMember))}
+     |> stream(
+       :team_members,
+       Ash.read!(Dash.Accounts.TeamMember, actor: socket.assigns.current_user)
+     )}
   end
 
   @impl true

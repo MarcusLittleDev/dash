@@ -50,7 +50,10 @@ defmodule DashWeb.OrgMembershipLive.Index do
     {:ok,
      socket
      |> assign(:page_title, "Listing Org memberships")
-     |> stream(:org_memberships, Ash.read!(Dash.Accounts.OrgMembership))}
+     |> stream(
+       :org_memberships,
+       Ash.read!(Dash.Accounts.OrgMembership, actor: socket.assigns.current_user)
+     )}
   end
 
   @impl true

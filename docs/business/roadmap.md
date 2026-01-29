@@ -2,14 +2,21 @@
 
 ### Phase 1: MVP (Weeks 1-8)
 
-**Week 1-2: Foundation**
+**Week 1-2: Foundation** ✅ **COMPLETE**
 - [x] Initialize Phoenix project
 - [x] Set up Ash Framework
 - [x] Configure PostgreSQL + TimescaleDB
 - [x] Implement authentication (username/password, magic link)
 - [x] Create Organization/Team/User schemas with role-based access
 - [x] Generate LiveViews for Organization and Team management
-- [ ] Build application shell with navigation (in progress)
+- [x] Build application shell with navigation
+  - [x] App shell layout with sidebar navigation
+  - [x] Admin shell layout with separate navigation
+  - [x] Role-based routing (admin vs user)
+  - [x] Landing page for unauthenticated users
+  - [x] Home page for authenticated users
+  - [x] Organization and team context switching
+  - [x] Placeholder navigation for Pipelines and Dashboards
 
 **Week 3-4: Core Pipeline**
 - [ ] Pipeline CRUD operations

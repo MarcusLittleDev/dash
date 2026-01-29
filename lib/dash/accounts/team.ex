@@ -93,6 +93,7 @@ defmodule Dash.Accounts.Team do
     update :update do
       accept([:name, :description])
       change(slugify(:name, into: :slug))
+      require_atomic?(false)
     end
 
     action :transfer_ownership, :struct do

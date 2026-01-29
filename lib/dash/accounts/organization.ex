@@ -30,6 +30,7 @@ defmodule Dash.Accounts.Organization do
     update :update do
       accept([:name])
       change(slugify(:name, into: :slug))
+      require_atomic?(false)
     end
 
     update :deactivate do
@@ -56,28 +57,30 @@ defmodule Dash.Accounts.Organization do
   end
 
   policies do
+    # Employees and superadmins can do anything with organizations
+    bypass action_type([:read, :create, :update]) do
+      authorize_if(actor_attribute_equals(:role, :employee))
+      authorize_if(actor_attribute_equals(:role, :superadmin))
+    end
+
+    # Regular users can only read organizations they are members of
     policy action_type(:read) do
       authorize_if(expr(exists(org_memberships, user_id == ^actor(:id))))
     end
 
-    # ONLY system/admin can create organizations (not regular users)
+    # Regular users cannot create organizations
     policy action_type(:create) do
-      # Block everyone for now
       forbid_if(always())
-      # TODO: add exception to create organizations
-      # Later you can add: authorize_if actor_attribute_equals(:is_system_admin, true)
     end
 
-    # Owners can update organization details
+    # Org owners can update their organization
     policy action_type(:update) do
       authorize_if(expr(exists(org_memberships, user_id == ^actor(:id) and role == :owner)))
     end
 
-    # Only system admins can deactivate/reactivate (or owners with confirmation)
+    # Only superadmins can deactivate/reactivate organizations
     policy action([:deactivate, :reactivate]) do
-      # For now, only via system/admin
-      forbid_if(always())
-      # TODO: add exception to deactivate/reactivate organizations
+      authorize_if(actor_attribute_equals(:role, :superadmin))
     end
   end
 end

@@ -51,3 +51,9 @@ config :bcrypt_elixir, :log_rounds, 1
 
 # Disable Oban during tests to avoid Sandbox conflicts
 config :dash, Oban, testing: :manual
+
+# Ash Framework test settings - disable async to work with SQL sandbox
+config :ash, :disable_async?, true
+
+# Suppress missed notification warnings in tests (they occur in transactions)
+config :ash, :missed_notifications, :ignore

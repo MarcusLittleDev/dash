@@ -31,24 +31,38 @@ defmodule DashWeb.Router do
         {DashWeb.Hooks.LiveOrgContext, :load_context}
       ],
       layout: {DashWeb.Layouts, :app_shell} do
-      # Organizations
-      live "/organizations", OrganizationLive.Index, :index
-      live "/organizations/:id", OrganizationLive.Show, :show
+      # Home
+      live "/home", HomeLive, :index
 
       # Teams
       live "/teams", TeamLive.Index, :index
+      # live "/teams/new", TeamLive.Form, :new
       live "/teams/:id", TeamLive.Show, :show
 
       # Org Memberships
-      live "/org_memberships", OrgMembershipLive.Index, :index
-      live "/org_memberships/new", OrgMembershipLive.Form, :new
-      live "/org_memberships/:id/edit", OrgMembershipLive.Form, :edit
-      live "/org_memberships/:id", OrgMembershipLive.Show, :show
-      live "/org_memberships/:id/show/edit", OrgMembershipLive.Show, :edit
+      live "/users", OrgMembershipLive.Index, :index
+      live "/users/new", OrgMembershipLive.Form, :new
+      live "/users/:id/edit", OrgMembershipLive.Form, :edit
+      live "/users/:id", OrgMembershipLive.Show, :show
+      live "/users/:id/show/edit", OrgMembershipLive.Show, :edit
 
       # Team Members
       live "/team_members", TeamMemberLive.Index, :index
       live "/team_members/:id", TeamMemberLive.Show, :show
+    end
+
+    # Admin routes - requires employee or superadmin role
+    ash_authentication_live_session :admin_routes,
+      on_mount: [
+        {DashWeb.LiveUserAuth, :live_user_required},
+        {DashWeb.LiveUserAuth, :live_employee_required}
+      ],
+      layout: {DashWeb.Layouts, :admin_shell} do
+      live "/admin", Admin.DashboardLive, :index
+      live "/admin/organizations", Admin.OrganizationLive.Index, :index
+      live "/admin/organizations/new", Admin.OrganizationLive.Form, :new
+      live "/admin/organizations/:id", Admin.OrganizationLive.Show, :show
+      live "/admin/organizations/:id/edit", Admin.OrganizationLive.Form, :edit
     end
 
     # Public routes - optional auth, minimal layout (future: public dashboards)

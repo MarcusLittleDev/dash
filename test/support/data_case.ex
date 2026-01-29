@@ -24,6 +24,7 @@ defmodule Dash.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import Dash.DataCase
+      import Dash.Factory
     end
   end
 

@@ -1,0 +1,40 @@
+<div class="drawer lg:drawer-open">
+  <input id="main-drawer" type="checkbox" class="drawer-toggle" />
+
+  <div class="drawer-content flex flex-col min-h-screen">
+    <!-- Top navbar (mobile only) -->
+    <header class="navbar bg-base-100 border-b border-base-200 lg:hidden">
+      <div class="flex-none">
+        <label for="main-drawer" class="btn btn-square btn-ghost drawer-button">
+          <DashWeb.CoreComponents.icon name="hero-bars-3" class="h-5 w-5" />
+        </label>
+      </div>
+      <div class="flex-1">
+        <span class="text-lg font-semibold"><%= @page_title || "Admin" %></span>
+      </div>
+      <div class="flex-none">
+        <DashWeb.Layouts.theme_toggle />
+      </div>
+    </header>
+
+    <!-- Desktop header with theme toggle -->
+    <header class="hidden lg:flex navbar bg-base-100 border-b border-base-200">
+      <div class="flex-1">
+        <h1 class="text-lg font-semibold"><%= @page_title || "" %></h1>
+      </div>
+      <div class="flex-none">
+        <DashWeb.Layouts.theme_toggle />
+      </div>
+    </header>
+
+    <!-- Main content area -->
+    <main class="flex-1 p-4 lg:p-6 overflow-auto">
+      <%= @inner_content %>
+    </main>
+  </div>
+
+  <!-- Admin Sidebar -->
+  <DashWeb.Navigation.admin_sidebar current_user={@current_user} />
+</div>
+
+<DashWeb.Layouts.flash_group flash={@flash} />
