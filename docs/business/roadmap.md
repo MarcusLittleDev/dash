@@ -19,12 +19,12 @@
   - [x] Placeholder navigation for Pipelines and Dashboards
 
 **Week 3-4: Core Pipeline**
-- [ ] Pipeline CRUD operations
-- [ ] HTTP polling source adapter
-- [ ] Oban job scheduling
-- [ ] TimescaleDB data insertion
-- [ ] Basic data mapping (field remapping only)
-- [ ] Pipeline worker GenServer
+- [x] Pipeline CRUD operations
+- [x] HTTP polling source adapter
+- [x] Oban job scheduling
+- [x] TimescaleDB data insertion
+- [x] Basic data mapping (field remapping only)
+- [x] Pipeline worker GenServer
 
 **Week 5-6: Dashboard MVP**
 - [ ] Dashboard CRUD

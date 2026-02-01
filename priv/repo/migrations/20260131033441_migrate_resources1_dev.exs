@@ -36,7 +36,8 @@ defmodule Dash.Repo.Migrations.MigrateResources1 do
             name: "pipelines_organization_id_fkey",
             type: :uuid,
             prefix: "public"
-          ), null: false
+          ),
+          null: false
     end
 
     create unique_index(:pipelines, [:organization_id, :name],
@@ -67,7 +68,8 @@ defmodule Dash.Repo.Migrations.MigrateResources1 do
             name: "pipeline_events_pipeline_id_fkey",
             type: :uuid,
             prefix: "public"
-          ), null: false
+          ),
+          null: false
     end
   end
 

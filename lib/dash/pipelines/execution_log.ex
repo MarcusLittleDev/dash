@@ -23,7 +23,10 @@ defmodule Dash.Pipelines.ExecutionLog do
       allow_nil?(false)
       constraints(one_of: [:success, :error, :no_data])
       public?(true)
-      description("Execution outcome: success (data fetched), error, or no_data (successful but empty)")
+
+      description(
+        "Execution outcome: success (data fetched), error, or no_data (successful but empty)"
+      )
     end
 
     attribute :started_at, :utc_datetime_usec do
@@ -60,7 +63,10 @@ defmodule Dash.Pipelines.ExecutionLog do
     end
 
     attribute :error_type, :atom do
-      constraints(one_of: [:source_fetch, :transformation, :storage, :sink_delivery, :validation, :timeout])
+      constraints(
+        one_of: [:source_fetch, :transformation, :storage, :sink_delivery, :validation, :timeout]
+      )
+
       public?(true)
       description("Category of error if execution failed")
     end
@@ -78,7 +84,10 @@ defmodule Dash.Pipelines.ExecutionLog do
     attribute :metadata, :map do
       default(%{})
       public?(true)
-      description("Additional execution metadata (source response headers, rate limit info, etc.)")
+
+      description(
+        "Additional execution metadata (source response headers, rate limit info, etc.)"
+      )
     end
   end
 
@@ -122,6 +131,7 @@ defmodule Dash.Pipelines.ExecutionLog do
         :error_details,
         :metadata
       ])
+
       require_atomic?(false)
     end
 
@@ -163,16 +173,22 @@ defmodule Dash.Pipelines.ExecutionLog do
   end
 
   calculations do
-    calculate :is_running, :boolean, expr(is_nil(completed_at))
+    calculate(:is_running, :boolean, expr(is_nil(completed_at)))
   end
 
   policies do
     policy action_type(:read) do
-      authorize_if(relates_to_actor_via([:pipeline, :organization]))
+      authorize_if(expr(exists(pipeline.organization.org_memberships, user_id == ^actor(:id))))
     end
 
-    policy action_type([:create, :update, :destroy]) do
-      authorize_if(relates_to_actor_via([:pipeline, :organization]))
+    # Execution logs are created/updated by the executor (system)
+    # The executor uses authorize?: false when creating/updating logs
+    policy action_type([:create, :update]) do
+      authorize_if(actor_present())
+    end
+
+    policy action_type(:destroy) do
+      authorize_if(expr(exists(pipeline.organization.org_memberships, user_id == ^actor(:id))))
     end
   end
 

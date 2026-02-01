@@ -10,30 +10,30 @@
         </label>
       </div>
       <div class="flex-1">
-        <span class="text-lg font-semibold"><%= @page_title || "Dash" %></span>
+        <span class="text-lg font-semibold">{@page_title || "Dash"}</span>
       </div>
       <div class="flex-none">
         <DashWeb.Layouts.theme_toggle />
       </div>
     </header>
-
-    <!-- Desktop header with theme toggle -->
+    
+<!-- Desktop header with theme toggle -->
     <header class="hidden lg:flex navbar bg-base-100 border-b border-base-200">
       <div class="flex-1">
-        <h1 class="text-lg font-semibold"><%= @page_title || "" %></h1>
+        <h1 class="text-lg font-semibold">{@page_title || ""}</h1>
       </div>
       <div class="flex-none">
         <DashWeb.Layouts.theme_toggle />
       </div>
     </header>
-
-    <!-- Main content area -->
+    
+<!-- Main content area -->
     <main class="flex-1 p-4 lg:p-6 overflow-auto">
-      <%= @inner_content %>
+      {@inner_content}
     </main>
   </div>
-
-  <!-- Sidebar -->
+  
+<!-- Sidebar -->
   <DashWeb.Navigation.sidebar
     current_user={@current_user}
     current_org={@current_org}

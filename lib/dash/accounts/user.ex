@@ -83,7 +83,10 @@ defmodule Dash.Accounts.User do
       constraints(one_of: [:user, :employee, :superadmin])
       default(:user)
       allow_nil?(false)
-      description("System-level role: user (customer), employee (internal staff), superadmin (full access)")
+
+      description(
+        "System-level role: user (customer), employee (internal staff), superadmin (full access)"
+      )
     end
   end
 

@@ -20,9 +20,7 @@ defmodule DashWeb.OrgMembershipLive.Form do
         field={@form[:role]}
         type="select"
         label="Role"
-        options={
-          Ash.Resource.Info.attribute(Dash.Accounts.OrgMembership, :role).constraints[:one_of]
-        }
+        options={Ash.Resource.Info.attribute(Dash.Accounts.OrgMembership, :role).constraints[:one_of]}
       />
 
       <.button phx-disable-with="Saving..." variant="primary">Save Org membership</.button>

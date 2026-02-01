@@ -57,3 +57,6 @@ config :ash, :disable_async?, true
 
 # Suppress missed notification warnings in tests (they occur in transactions)
 config :ash, :missed_notifications, :ignore
+
+# Use mock adapter for external API calls in tests
+config :dash, :external_adapter, Dash.Adapters.ExternalMock

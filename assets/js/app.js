@@ -26,10 +26,25 @@ import {hooks as colocatedHooks} from "phoenix-colocated/dash"
 import topbar from "../vendor/topbar"
 
 const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
+
+// Custom hooks
+const Hooks = {
+  MappingInput: {
+    mounted() {
+      this.el.addEventListener("blur", (e) => {
+        const index = this.el.dataset.index
+        const field = this.el.dataset.field
+        const value = this.el.value
+        this.pushEvent("update_mapping_field", { index: index, field: field, value: value })
+      })
+    }
+  }
+}
+
 const liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
   params: {_csrf_token: csrfToken},
-  hooks: {...colocatedHooks},
+  hooks: {...colocatedHooks, ...Hooks},
 })
 
 // Show progress bar on live navigation and form submits

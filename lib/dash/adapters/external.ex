@@ -41,6 +41,7 @@ defmodule Dash.Adapters.External do
   """
   @spec get_adapter(String.t()) :: module() | nil
   def get_adapter("http"), do: Dash.Adapters.External.Http
+  def get_adapter("http_api"), do: Dash.Adapters.External.Http
   def get_adapter(_), do: nil
 
   @doc """

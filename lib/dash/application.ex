@@ -18,7 +18,9 @@ defmodule Dash.Application do
       # {Dash.Worker, arg},
       # Start to serve requests, typically the last entry
       DashWeb.Endpoint,
-      {AshAuthentication.Supervisor, [otp_app: :dash]}
+      {AshAuthentication.Supervisor, [otp_app: :dash]},
+      # Start active pipelines after application boot
+      {Task, fn -> Dash.Pipelines.LifecycleManager.start_all_active_pipelines() end}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

@@ -87,7 +87,10 @@ defmodule Dash.MixProject do
       # Development tools
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:sourceror, "~> 1.7", only: [:dev, :test]},
-      {:igniter, "~> 0.6", only: [:dev]}
+      {:igniter, "~> 0.6", only: [:dev]},
+
+      # Testing tools
+      {:mox, "~> 1.0", only: :test}
     ]
   end
 

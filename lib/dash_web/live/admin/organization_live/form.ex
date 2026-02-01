@@ -57,7 +57,10 @@ defmodule DashWeb.Admin.OrganizationLive.Form do
   end
 
   def handle_event("save", %{"organization" => organization_params}, socket) do
-    case AshPhoenix.Form.submit(socket.assigns.form, params: organization_params, actor: socket.assigns.current_user) do
+    case AshPhoenix.Form.submit(socket.assigns.form,
+           params: organization_params,
+           actor: socket.assigns.current_user
+         ) do
       {:ok, organization} ->
         notify_parent({:saved, organization})
 
@@ -80,7 +83,10 @@ defmodule DashWeb.Admin.OrganizationLive.Form do
       if organization do
         AshPhoenix.Form.for_update(organization, :update, as: "organization", actor: current_user)
       else
-        AshPhoenix.Form.for_create(Dash.Accounts.Organization, :create, as: "organization", actor: current_user)
+        AshPhoenix.Form.for_create(Dash.Accounts.Organization, :create,
+          as: "organization",
+          actor: current_user
+        )
       end
 
     assign(socket, form: to_form(form))

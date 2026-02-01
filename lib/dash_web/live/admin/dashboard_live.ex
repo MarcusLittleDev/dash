@@ -16,11 +16,13 @@ defmodule DashWeb.Admin.DashboardLive do
       </.header>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <.link navigate={~p"/admin/organizations"} class="card bg-base-200 hover:bg-base-300 transition-colors">
+        <.link
+          navigate={~p"/admin/organizations"}
+          class="card bg-base-200 hover:bg-base-300 transition-colors"
+        >
           <div class="card-body">
             <h2 class="card-title">
-              <.icon name="hero-building-office-2" class="w-6 h-6" />
-              Organizations
+              <.icon name="hero-building-office-2" class="w-6 h-6" /> Organizations
             </h2>
             <p>Create and manage customer organizations</p>
           </div>

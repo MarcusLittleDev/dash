@@ -37,7 +37,8 @@ defmodule Dash.Repo.Migrations.MigrateResources2 do
             name: "pipeline_execution_logs_pipeline_id_fkey",
             type: :uuid,
             prefix: "public"
-          ), null: false
+          ),
+          null: false
     end
 
     create table(:data_mappings, primary_key: false) do
@@ -62,7 +63,8 @@ defmodule Dash.Repo.Migrations.MigrateResources2 do
             name: "data_mappings_pipeline_id_fkey",
             type: :uuid,
             prefix: "public"
-          ), null: false
+          ),
+          null: false
     end
 
     create unique_index(:data_mappings, [:pipeline_id, :target_field],

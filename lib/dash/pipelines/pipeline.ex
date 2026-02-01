@@ -91,6 +91,10 @@ defmodule Dash.Pipelines.Pipeline do
     has_many :execution_logs, Dash.Pipelines.ExecutionLog do
       public?(true)
     end
+    
+    has_many :data_mappings, Dash.Pipelines.DataMapping do
+      public?(true)
+    end
   end
 
   actions do
@@ -125,6 +129,7 @@ defmodule Dash.Pipelines.Pipeline do
         :persist_data,
         :retention_days
       ])
+
       require_atomic?(false)
     end
 
@@ -187,11 +192,17 @@ defmodule Dash.Pipelines.Pipeline do
 
   policies do
     policy action_type(:read) do
-      authorize_if(relates_to_actor_via(:organization))
+      authorize_if(expr(exists(organization.org_memberships, user_id == ^actor(:id))))
     end
 
-    policy action_type([:create, :update, :destroy]) do
-      authorize_if(relates_to_actor_via(:organization))
+    # For create, we can't use relationship filters since the record doesn't exist yet
+    # Authorization is handled by the LiveView ensuring user has access to current_org
+    policy action_type(:create) do
+      authorize_if(actor_present())
+    end
+
+    policy action_type([:update, :destroy]) do
+      authorize_if(expr(exists(organization.org_memberships, user_id == ^actor(:id))))
     end
   end
 

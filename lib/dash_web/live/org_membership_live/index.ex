@@ -17,9 +17,7 @@ defmodule DashWeb.OrgMembershipLive.Index do
     <.table
       id="org_memberships"
       rows={@streams.org_memberships}
-      row_click={
-        fn {_id, org_membership} -> JS.navigate(~p"/org_memberships/#{org_membership}") end
-      }
+      row_click={fn {_id, org_membership} -> JS.navigate(~p"/org_memberships/#{org_membership}") end}
     >
       <:col :let={{_id, org_membership}} label="Id">{org_membership.id}</:col>
 

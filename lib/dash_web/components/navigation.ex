@@ -40,7 +40,7 @@ defmodule DashWeb.Navigation do
     <div class="dropdown dropdown-bottom w-full mb-4">
       <div tabindex="0" role="button" class="btn btn-ghost justify-between w-full">
         <span class="truncate">
-          <%= if @current_org, do: @current_org.name, else: "Select Organization" %>
+          {if @current_org, do: @current_org.name, else: "Select Organization"}
         </span>
         <.icon name="hero-chevron-down" class="h-4 w-4" />
       </div>
@@ -52,8 +52,8 @@ defmodule DashWeb.Navigation do
               phx-value-org_id={org.id}
               class={if @current_org && @current_org.id == org.id, do: "active", else: ""}
             >
-              <span class="truncate"><%= org.name %></span>
-              <span class="badge badge-sm badge-ghost"><%= org.user_role %></span>
+              <span class="truncate">{org.name}</span>
+              <span class="badge badge-sm badge-ghost">{org.user_role}</span>
             </button>
           </li>
         <% end %>
@@ -78,15 +78,17 @@ defmodule DashWeb.Navigation do
         <%= for team <- @teams do %>
           <li>
             <.link navigate={~p"/teams/#{team.id}"} class="flex justify-between">
-              <span class="truncate"><%= team.name %></span>
+              <span class="truncate">{team.name}</span>
               <%= if team.user_role do %>
-                <span class="badge badge-xs badge-ghost"><%= team.user_role %></span>
+                <span class="badge badge-xs badge-ghost">{team.user_role}</span>
               <% end %>
             </.link>
           </li>
         <% end %>
         <%= if @teams == [] && @current_org do %>
-          <li class="disabled"><span class="text-base-content/50 text-sm px-2">No teams yet</span></li>
+          <li class="disabled">
+            <span class="text-base-content/50 text-sm px-2">No teams yet</span>
+          </li>
         <% end %>
       </ul>
     </div>
@@ -102,26 +104,22 @@ defmodule DashWeb.Navigation do
       <ul class="menu menu-sm">
         <li>
           <.link navigate={~p"/home"}>
-            <.icon name="hero-home" class="h-4 w-4" />
-            Home
+            <.icon name="hero-home" class="h-4 w-4" /> Home
           </.link>
         </li>
         <li>
           <.link navigate={~p"/pipelines"}>
-            <.icon name="hero-arrow-path" class="h-4 w-4" />
-            Pipelines
+            <.icon name="hero-arrow-path" class="h-4 w-4" /> Pipelines
           </.link>
         </li>
         <li>
           <.link navigate={~p"/dashboards"}>
-            <.icon name="hero-chart-bar" class="h-4 w-4" />
-            Dashboards
+            <.icon name="hero-chart-bar" class="h-4 w-4" /> Dashboards
           </.link>
         </li>
         <li>
           <.link navigate={~p"/teams"}>
-            <.icon name="hero-user-group" class="h-4 w-4" />
-            Teams
+            <.icon name="hero-user-group" class="h-4 w-4" /> Teams
           </.link>
         </li>
       </ul>
@@ -161,14 +159,12 @@ defmodule DashWeb.Navigation do
       <ul class="menu menu-sm">
         <li>
           <.link navigate={~p"/admin"}>
-            <.icon name="hero-chart-bar" class="h-4 w-4" />
-            Dashboard
+            <.icon name="hero-chart-bar" class="h-4 w-4" /> Dashboard
           </.link>
         </li>
         <li>
           <.link navigate={~p"/admin/organizations"}>
-            <.icon name="hero-building-office-2" class="h-4 w-4" />
-            Organizations
+            <.icon name="hero-building-office-2" class="h-4 w-4" /> Organizations
           </.link>
         </li>
       </ul>
@@ -185,23 +181,26 @@ defmodule DashWeb.Navigation do
         <div tabindex="0" role="button" class="btn btn-ghost justify-start w-full">
           <div class="avatar placeholder">
             <div class="bg-neutral text-neutral-content rounded-full w-8">
-              <span class="text-xs"><%= String.first(to_string(@current_user.email)) |> String.upcase() %></span>
+              <span class="text-xs">
+                {String.first(to_string(@current_user.email)) |> String.upcase()}
+              </span>
             </div>
           </div>
-          <span class="truncate flex-1 text-left"><%= to_string(@current_user.email) %></span>
+          <span class="truncate flex-1 text-left">{to_string(@current_user.email)}</span>
           <.icon name="hero-chevron-up" class="h-4 w-4" />
         </div>
-        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-full mb-2">
+        <ul
+          tabindex="0"
+          class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-full mb-2"
+        >
           <li>
             <.link navigate={~p"/home"}>
-              <.icon name="hero-home" class="h-4 w-4" />
-              Back to App
+              <.icon name="hero-home" class="h-4 w-4" /> Back to App
             </.link>
           </li>
           <li class="border-t border-base-200 mt-1 pt-1">
             <.link href={~p"/sign-out"} method="delete" class="text-error">
-              <.icon name="hero-arrow-right-on-rectangle" class="h-4 w-4" />
-              Sign Out
+              <.icon name="hero-arrow-right-on-rectangle" class="h-4 w-4" /> Sign Out
             </.link>
           </li>
         </ul>
@@ -219,23 +218,26 @@ defmodule DashWeb.Navigation do
         <div tabindex="0" role="button" class="btn btn-ghost justify-start w-full">
           <div class="avatar placeholder">
             <div class="bg-neutral text-neutral-content rounded-full w-8">
-              <span class="text-xs"><%= String.first(to_string(@current_user.email)) |> String.upcase() %></span>
+              <span class="text-xs">
+                {String.first(to_string(@current_user.email)) |> String.upcase()}
+              </span>
             </div>
           </div>
-          <span class="truncate flex-1 text-left"><%= to_string(@current_user.email) %></span>
+          <span class="truncate flex-1 text-left">{to_string(@current_user.email)}</span>
           <.icon name="hero-chevron-up" class="h-4 w-4" />
         </div>
-        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-full mb-2">
+        <ul
+          tabindex="0"
+          class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-full mb-2"
+        >
           <li>
             <.link navigate={~p"/org_memberships"}>
-              <.icon name="hero-identification" class="h-4 w-4" />
-              My Memberships
+              <.icon name="hero-identification" class="h-4 w-4" /> My Memberships
             </.link>
           </li>
           <li class="border-t border-base-200 mt-1 pt-1">
             <.link href={~p"/sign-out"} method="delete" class="text-error">
-              <.icon name="hero-arrow-right-on-rectangle" class="h-4 w-4" />
-              Sign Out
+              <.icon name="hero-arrow-right-on-rectangle" class="h-4 w-4" /> Sign Out
             </.link>
           </li>
         </ul>

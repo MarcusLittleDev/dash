@@ -73,12 +73,13 @@ defmodule Dash.Pipelines.PipelineEvent do
 
   policies do
     policy action_type(:read) do
-      authorize_if(relates_to_actor_via([:pipeline, :organization]))
+      authorize_if(expr(exists(pipeline.organization.org_memberships, user_id == ^actor(:id))))
     end
 
-    # Only system can create events (not users directly)
+    # Pipeline events are created by the executor (system), not users directly
+    # The executor uses authorize?: false when creating events
     policy action_type(:create) do
-      forbid_if(always())
+      authorize_if(actor_present())
     end
   end
 

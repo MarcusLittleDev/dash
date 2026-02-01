@@ -49,6 +49,12 @@ defmodule DashWeb.Router do
       # Team Members
       live "/team_members", TeamMemberLive.Index, :index
       live "/team_members/:id", TeamMemberLive.Show, :show
+
+      # Pipelines
+      live "/pipelines", PipelineLive.Index, :index
+      live "/pipelines/new", PipelineLive.Wizard, :new
+      live "/pipelines/:id/edit", PipelineLive.Wizard, :edit
+      live "/pipelines/:id", PipelineLive.Show, :show
     end
 
     # Admin routes - requires employee or superadmin role

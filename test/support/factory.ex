@@ -21,6 +21,7 @@ defmodule Dash.Factory do
   """
 
   alias Dash.Accounts.{User, Organization, OrgMembership, Team, TeamMember}
+  alias Dash.Pipelines.{Pipeline, DataMapping, ExecutionLog}
 
   @doc """
   Creates a user with password authentication.
@@ -187,5 +188,125 @@ defmodule Dash.Factory do
 
   defp unique_team_name do
     "Team #{System.unique_integer([:positive])}"
+  end
+
+  defp unique_pipeline_name do
+    "Pipeline #{System.unique_integer([:positive])}"
+  end
+
+  @doc """
+  Creates a pipeline.
+  Requires :organization option.
+  """
+  def create_pipeline!(opts \\ []) do
+    {org, _owner} =
+      Keyword.get_lazy(opts, :organization, fn ->
+        create_organization_with_owner!()
+      end)
+
+    name = Keyword.get(opts, :name, unique_pipeline_name())
+    type = Keyword.get(opts, :type, :polling)
+    status = Keyword.get(opts, :status, :inactive)
+
+    # Only set interval_seconds for polling type
+    interval_seconds =
+      if type == :polling do
+        Keyword.get(opts, :interval_seconds, 300)
+      else
+        Keyword.get(opts, :interval_seconds)
+      end
+
+    source_config =
+      Keyword.get(opts, :source_config, %{
+        "url" => "https://jsonplaceholder.typicode.com/posts",
+        "method" => "GET"
+      })
+
+    attrs = %{
+      name: name,
+      description: Keyword.get(opts, :description),
+      type: type,
+      status: status,
+      source_type: Keyword.get(opts, :source_type, "http_api"),
+      source_config: source_config,
+      sink_configs: Keyword.get(opts, :sink_configs, []),
+      persist_data: Keyword.get(opts, :persist_data, true),
+      retention_days: Keyword.get(opts, :retention_days),
+      organization_id: org.id
+    }
+
+    # Only include interval_seconds if not nil
+    attrs =
+      if is_nil(interval_seconds) do
+        attrs
+      else
+        Map.put(attrs, :interval_seconds, interval_seconds)
+      end
+
+    Pipeline
+    |> Ash.Changeset.for_create(:create, attrs)
+    |> Ash.create!(authorize?: false)
+  end
+
+  @doc """
+  Creates data mappings for a pipeline.
+  Requires :pipeline option.
+  """
+  def create_data_mapping!(opts) do
+    pipeline = Keyword.fetch!(opts, :pipeline)
+
+    mappings =
+      Keyword.get(opts, :mappings, [
+        %{
+          source_field: "title",
+          target_field: "title",
+          required: true,
+          transformation_type: :direct
+        },
+        %{
+          source_field: "body",
+          target_field: "content",
+          required: false,
+          transformation_type: :direct
+        }
+      ])
+
+    # Create multiple DataMapping records, one for each mapping
+    Enum.map(mappings, fn mapping ->
+      DataMapping
+      |> Ash.Changeset.for_create(:create, %{
+        pipeline_id: pipeline.id,
+        source_field: mapping[:source_field] || mapping["source_field"],
+        target_field: mapping[:target_field] || mapping["target_field"],
+        required: mapping[:required] || mapping["required"] || false,
+        transformation_type: mapping[:transformation_type] || mapping["transformation_type"] || :direct
+      })
+      |> Ash.create!(authorize?: false)
+    end)
+  end
+
+  @doc """
+  Creates an execution log for a pipeline.
+  Requires :pipeline option.
+  """
+  def create_execution_log!(opts) do
+    pipeline = Keyword.fetch!(opts, :pipeline)
+
+    ExecutionLog
+    |> Ash.Changeset.for_create(:create, %{
+      pipeline_id: pipeline.id,
+      started_at: Keyword.get(opts, :started_at, DateTime.utc_now()),
+      completed_at: Keyword.get(opts, :completed_at, DateTime.utc_now()),
+      status: Keyword.get(opts, :status, :success),
+      records_fetched: Keyword.get(opts, :records_fetched, 10),
+      records_stored: Keyword.get(opts, :records_stored, 10),
+      duration_ms: Keyword.get(opts, :duration_ms, 250),
+      error_type: Keyword.get(opts, :error_type),
+      error_message: Keyword.get(opts, :error_message),
+      error_details: Keyword.get(opts, :error_details),
+      source_response_time_ms: Keyword.get(opts, :source_response_time_ms, 150),
+      metadata: Keyword.get(opts, :metadata, %{})
+    })
+    |> Ash.create!(authorize?: false)
   end
 end
