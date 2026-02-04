@@ -1,4 +1,4 @@
-defmodule Dash.Repo.Migrations.MigrateResources2 do
+defmodule Dash.Repo.Migrations.AddPipelineTables do
   @moduledoc """
   Updates resources based on their most recent snapshots.
 
@@ -8,6 +8,41 @@ defmodule Dash.Repo.Migrations.MigrateResources2 do
   use Ecto.Migration
 
   def up do
+    create table(:pipelines, primary_key: false) do
+      add :id, :uuid, null: false, default: fragment("gen_random_uuid()"), primary_key: true
+
+      add :inserted_at, :utc_datetime_usec,
+        null: false,
+        default: fragment("(now() AT TIME ZONE 'utc')")
+
+      add :updated_at, :utc_datetime_usec,
+        null: false,
+        default: fragment("(now() AT TIME ZONE 'utc')")
+
+      add :name, :text, null: false
+      add :description, :text
+      add :status, :text, null: false, default: "inactive"
+      add :type, :text, null: false
+      add :interval_seconds, :bigint
+      add :source_type, :text, null: false
+      add :source_config, :map, null: false
+      add :sink_configs, {:array, :map}, default: []
+      add :persist_data, :boolean, null: false, default: true
+      add :retention_days, :bigint
+
+      add :organization_id,
+          references(:organizations,
+            column: :id,
+            name: "pipelines_organization_id_fkey",
+            type: :uuid,
+            prefix: "public"
+          ), null: false
+    end
+
+    create unique_index(:pipelines, [:organization_id, :name],
+             name: "pipelines_unique_name_per_org_index"
+           )
+
     create table(:pipeline_execution_logs, primary_key: false) do
       add :id, :uuid, null: false, default: fragment("gen_random_uuid()"), primary_key: true
 
@@ -37,8 +72,34 @@ defmodule Dash.Repo.Migrations.MigrateResources2 do
             name: "pipeline_execution_logs_pipeline_id_fkey",
             type: :uuid,
             prefix: "public"
-          ),
-          null: false
+          ), null: false
+    end
+
+    create table(:pipeline_events, primary_key: false) do
+      add :id, :uuid, null: false, default: fragment("gen_random_uuid()"), primary_key: true
+
+      add :inserted_at, :utc_datetime_usec,
+        null: false,
+        default: fragment("(now() AT TIME ZONE 'utc')")
+
+      add :updated_at, :utc_datetime_usec,
+        null: false,
+        default: fragment("(now() AT TIME ZONE 'utc')")
+
+      add :timestamp, :utc_datetime_usec,
+        null: false,
+        default: fragment("(now() AT TIME ZONE 'utc')")
+
+      add :data, :map, null: false
+      add :metadata, :map, default: %{}
+
+      add :pipeline_id,
+          references(:pipelines,
+            column: :id,
+            name: "pipeline_events_pipeline_id_fkey",
+            type: :uuid,
+            prefix: "public"
+          ), null: false
     end
 
     create table(:data_mappings, primary_key: false) do
@@ -63,8 +124,7 @@ defmodule Dash.Repo.Migrations.MigrateResources2 do
             name: "data_mappings_pipeline_id_fkey",
             type: :uuid,
             prefix: "public"
-          ),
-          null: false
+          ), null: false
     end
 
     create unique_index(:data_mappings, [:pipeline_id, :target_field],
@@ -81,8 +141,20 @@ defmodule Dash.Repo.Migrations.MigrateResources2 do
 
     drop table(:data_mappings)
 
+    drop constraint(:pipeline_events, "pipeline_events_pipeline_id_fkey")
+
+    drop table(:pipeline_events)
+
     drop constraint(:pipeline_execution_logs, "pipeline_execution_logs_pipeline_id_fkey")
 
     drop table(:pipeline_execution_logs)
+
+    drop_if_exists unique_index(:pipelines, [:organization_id, :name],
+                     name: "pipelines_unique_name_per_org_index"
+                   )
+
+    drop constraint(:pipelines, "pipelines_organization_id_fkey")
+
+    drop table(:pipelines)
   end
 end

@@ -25,6 +25,10 @@ import {LiveSocket} from "phoenix_live_view"
 import {hooks as colocatedHooks} from "phoenix-colocated/dash"
 import topbar from "../vendor/topbar"
 
+// Chart hooks for dashboard widgets
+import { LineChart } from "./hooks/line_chart"
+import { BarChart } from "./hooks/bar_chart"
+
 const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 
 // Custom hooks
@@ -38,7 +42,9 @@ const Hooks = {
         this.pushEvent("update_mapping_field", { index: index, field: field, value: value })
       })
     }
-  }
+  },
+  LineChart,
+  BarChart
 }
 
 const liveSocket = new LiveSocket("/live", Socket, {

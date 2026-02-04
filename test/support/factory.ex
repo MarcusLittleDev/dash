@@ -22,6 +22,7 @@ defmodule Dash.Factory do
 
   alias Dash.Accounts.{User, Organization, OrgMembership, Team, TeamMember}
   alias Dash.Pipelines.{Pipeline, DataMapping, ExecutionLog}
+  alias Dash.Dashboards.{Dashboard, Widget}
 
   @doc """
   Creates a user with password authentication.
@@ -194,6 +195,14 @@ defmodule Dash.Factory do
     "Pipeline #{System.unique_integer([:positive])}"
   end
 
+  defp unique_dashboard_name do
+    "Dashboard #{System.unique_integer([:positive])}"
+  end
+
+  defp unique_widget_name do
+    "Widget #{System.unique_integer([:positive])}"
+  end
+
   @doc """
   Creates a pipeline.
   Requires :organization option.
@@ -283,6 +292,50 @@ defmodule Dash.Factory do
       })
       |> Ash.create!(authorize?: false)
     end)
+  end
+
+  @doc """
+  Creates a dashboard.
+  Requires :organization option.
+  """
+  def create_dashboard!(opts \\ []) do
+    org =
+      Keyword.get_lazy(opts, :organization, fn ->
+        {org, _owner} = create_organization_with_owner!()
+        org
+      end)
+
+    user = Keyword.get(opts, :created_by)
+
+    Dashboard
+    |> Ash.Changeset.for_create(:create, %{
+      name: Keyword.get(opts, :name, unique_dashboard_name()),
+      description: Keyword.get(opts, :description),
+      is_default: Keyword.get(opts, :is_default, false),
+      organization_id: org.id,
+      created_by_id: if(user, do: user.id)
+    })
+    |> Ash.create!(authorize?: false)
+  end
+
+  @doc """
+  Creates a widget on a dashboard.
+  Requires :dashboard and :pipeline options.
+  """
+  def create_widget!(opts) do
+    dashboard = Keyword.fetch!(opts, :dashboard)
+    pipeline = Keyword.fetch!(opts, :pipeline)
+
+    Widget
+    |> Ash.Changeset.for_create(:create, %{
+      name: Keyword.get(opts, :name, unique_widget_name()),
+      type: Keyword.get(opts, :type, :table),
+      config: Keyword.get(opts, :config, %{}),
+      position: Keyword.get(opts, :position, %{"x" => 0, "y" => 0, "w" => 6, "h" => 4}),
+      dashboard_id: dashboard.id,
+      pipeline_id: pipeline.id
+    })
+    |> Ash.create!(authorize?: false)
   end
 
   @doc """

@@ -63,6 +63,11 @@ defmodule Dash.Pipelines.Executor do
          {:ok, transformed} <- transform_data(pipeline, data),
          {:ok, stored_count} <- maybe_persist_data(pipeline, transformed),
          {:ok, _sink_results} <- send_to_sinks(pipeline, transformed) do
+      # Broadcast to dashboard widgets (only if we have data)
+      if length(transformed) > 0 do
+        broadcast_to_dashboards(pipeline.id, transformed)
+      end
+
       # Calculate duration
       completed_at = DateTime.utc_now()
       duration_ms = DateTime.diff(completed_at, started_at, :millisecond)
@@ -241,5 +246,13 @@ defmodule Dash.Pipelines.Executor do
       )
     )
     |> Ash.update(authorize?: false)
+  end
+
+  defp broadcast_to_dashboards(pipeline_id, transformed_data) do
+    # Broadcast to any widgets watching this pipeline
+    Dash.Dashboards.PubSub.broadcast_to_widgets(pipeline_id, transformed_data)
+  rescue
+    error ->
+      Logger.warning("Failed to broadcast to dashboards: #{Exception.message(error)}")
   end
 end

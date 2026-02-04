@@ -27,12 +27,12 @@
 - [x] Pipeline worker GenServer
 
 **Week 5-6: Dashboard MVP**
-- [ ] Dashboard CRUD
-- [ ] Widget system (table widget only initially)
-- [ ] LiveView real-time updates
-- [ ] Chart.js integration (line chart)
-- [ ] Simple grid layout
-- [ ] ETS cache implementation
+- [x] Dashboard CRUD
+- [x] Widget system (table widget only initially)
+- [x] LiveView real-time updates
+- [x] Chart.js integration (line chart)
+- [x] Simple grid layout
+- [x] ETS cache implementation
 
 **Week 7-8: Polish & Deploy**
 - [ ] Add 2-3 more widget types (stat card, bar chart)

@@ -14,8 +14,8 @@ defmodule Dash.Application do
       {Oban, Application.fetch_env!(:dash, Oban)},
       {DNSCluster, query: Application.get_env(:dash, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Dash.PubSub},
-      # Start a worker by calling: Dash.Worker.start_link(arg)
-      # {Dash.Worker, arg},
+      # Dashboard data cache
+      Dash.Dashboards.DataServer,
       # Start to serve requests, typically the last entry
       DashWeb.Endpoint,
       {AshAuthentication.Supervisor, [otp_app: :dash]},

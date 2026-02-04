@@ -13,7 +13,7 @@ config :spark,
 config :dash,
   ecto_repos: [Dash.Repo],
   generators: [timestamp_type: :utc_datetime],
-  ash_domains: [Dash.Accounts, Dash.Pipelines],
+  ash_domains: [Dash.Accounts, Dash.Pipelines, Dash.Dashboards],
   ash_authentication: [return_error_on_invalid_magic_link_token?: true]
 
 # Configure the endpoint

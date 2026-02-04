@@ -55,6 +55,14 @@ defmodule DashWeb.Router do
       live "/pipelines/new", PipelineLive.Wizard, :new
       live "/pipelines/:id/edit", PipelineLive.Wizard, :edit
       live "/pipelines/:id", PipelineLive.Show, :show
+
+      # Dashboards
+      live "/dashboards", DashboardLive.Index, :index
+      live "/dashboards/new", DashboardLive.Form, :new
+      live "/dashboards/:id", DashboardLive.Show, :show
+      live "/dashboards/:id/edit", DashboardLive.Form, :edit
+      live "/dashboards/:dashboard_id/widgets/new", DashboardLive.WidgetForm, :new
+      live "/dashboards/:dashboard_id/widgets/:widget_id/edit", DashboardLive.WidgetForm, :edit
     end
 
     # Admin routes - requires employee or superadmin role
